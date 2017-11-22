@@ -1,0 +1,87 @@
+<html class="ui-mobile">
+<head>
+    <base href="http://127.0.0.1:9000/chat/webUser/login">
+    <title>简单的聊天系统</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/chat/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/chat/static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/chat/static/css/jquery.mobile.flatui.css">
+    <link rel="stylesheet" type="text/css" href="/chat/static/css/main.css">
+    <script src="/chat/static/jsFromInternet/jquery.js"></script>
+    <script src="/chat/static/jsFromInternet/sockjs.js"></script>
+    <script src="/chat/static/my-js/login.js"></script>
+    <script src="/chat/static/my-js/chat.js"></script>
+    <script src="/chat/static/my-js/chooseFile.js"></script>
+    <script src="/chat/static/my-js/friendApplyMe.js"></script>
+    <script src="/chat/static/my-js/meApplyFriend.js"></script>
+
+
+</head>
+<body class="bg text-center ui-mobile-viewport ui-overlay-a" id="changedBody">
+
+
+<div data-role="page" class="text-center ui-page ui-page-theme-a ui-page-active" id="changedDiv" data-url="changedDiv"
+     tabindex="0" style="min-height: 368px;">
+
+    <div data-role="header" class="header linear-g transparentbg" style="width: 50%">
+        <a class="text-center col-xs-8">我的好友列表(点击名字或者头像即可开始聊天)</a>
+        <a href="#panel-right" data-iconpos="notext" class="glyphicon glyphicon-webUser col-xs-2 text-left"> </a>
+    </div>
+
+    <div data-role="panel" data-position="right" data-display="push"
+         class="user_box text-center dn linear-g transparentbg" id="panel-right">
+        <div class="u_info">
+            <img class="avatar" src="/chat/static/images/avatar.png" alt="头像">
+            <span class="username">developer</span>
+        </div>
+        <ul class="user_menu">
+            <li class="menu"><a href="/friendList.html"><span class="glyphicon glyphicon-heart"> </span>
+                &nbsp;我的好友列表</a>
+            </li>
+            <li class="menu"><a href="/meApplyFriend.html"><span class="glyphicon glyphicon-plus"> </span> &nbsp;加好友</a>
+            </li>
+            <li class="menu"><a href="/friendApplyMe.html"><span class="glyphicon glyphicon-info-sign"> </span> &nbsp;我收到的好友请求</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <br>
+    <br>
+    <br>
+    <div data-role="content" class="container text-center" role="main" style="width: 50%">
+        <br>
+        <a class="webUser" href="chat.html"><img class="avatar_" src="/chat/static/images/avatar.png" alt=""><span>&nbsp;&nbsp;&nbsp;用户名:</span><span>&nbsp;灞波儿奔</span></a>
+        <br>
+
+        <a class="webUser" href="chat.html"><img class="avatar_" src="/chat/static/images/avatar.png" alt=""><span>&nbsp;&nbsp;&nbsp;用户名:</span><span>&nbsp;灞波儿奔</span></a>
+        <br>
+
+
+    </div>
+</div>
+
+
+<script type="text/javascript" src="/chat/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="/chat/static/js/jquery.mobile-1.4.0-rc.1.js"></script>
+<script type="text/javascript">
+    $(function () {
+        /*
+         ** 不同页面切换转场效果
+         ** $.mobile.changePage ('/test.html', 'slide/pop/fade/slideup/slidedown/flip/none', false, false);
+         */
+        $("#changedDiv").delegate('.list-group-item,.menu a', "click", function () {
+            $.mobile.changePage($(this).attr('href'), {
+                transition: 'flip', //转场效果
+                reverse: true       //默认为false,设置为true时将导致一个反方向的转场
+            });
+        });
+    });
+</script>
+
+<div class="ui-loader ui-corner-all ui-body-a ui-loader-default"><span class="ui-icon-loading"></span>
+    <h1>loading</h1></div>
+</body>
+</html>

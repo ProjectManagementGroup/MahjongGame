@@ -1,0 +1,310 @@
+2017-11-22 19:46:57,813 INFO  [main] Application: Starting Application on zhaoyawendeMacBook-Pro.local with PID 9193 (/Users/zhaoyawen/Documents/14302010057-ZhaoYaWen/chat/target/classes started by zhaoyawen in /Users/zhaoyawen/Documents/14302010057-ZhaoYaWen/chat)
+2017-11-22 19:46:57,816 DEBUG [main] Application: Running with Spring Boot v1.5.3.RELEASE, Spring v4.3.8.RELEASE
+2017-11-22 19:46:57,816 INFO  [main] Application: The following profiles are active: dev
+2017-11-22 19:46:58,199 DEBUG [background-preinit] logging: Logging Provider: org.jboss.logging.Slf4jLoggerProvider found via system property
+2017-11-22 19:46:59,524 INFO  [localhost-startStop-1] WebConfigurer: Web application configuration, using profiles: [dev]
+2017-11-22 19:46:59,525 INFO  [localhost-startStop-1] WebConfigurer: Web application fully configured
+2017-11-22 19:47:00,815 INFO  [main] Application: Running with Spring profile(s) : [dev]
+2017-11-22 19:47:01,597 INFO  [main] WebSocketConfig: 注册spring websocket开始
+2017-11-22 19:47:01,599 INFO  [main] WebSocketConfig: 注册spring websocket成功
+2017-11-22 19:47:02,384 INFO  [main] Application: Started Application in 5.01 seconds (JVM running for 5.954)
+2017-11-22 19:47:02,385 INFO  [main] Application: Access URLs:
+----------------------------------------------------------
+	Local: 		https://127.0.0.1:9000/chat
+	External: 	https://127.0.0.1:9000/chat
+----------------------------------------------------------
+2017-11-22 19:47:50,969 DEBUG [https-jsse-nio-9000-exec-8] HandshakeInterceptor: 握手前...null
+2017-11-22 19:47:50,995 DEBUG [https-jsse-nio-9000-exec-8] HandshakeInterceptor: 握手后...
+2017-11-22 19:47:51,009 DEBUG [https-jsse-nio-9000-exec-8] SystemWebSocketHandler: 链接webSocket成功
+2017-11-22 19:48:50,019 DEBUG [https-jsse-nio-9000-exec-10] SystemWebSocketHandler: WebSocket出错！
+2017-11-22 19:48:50,021 DEBUG [https-jsse-nio-9000-exec-10] SystemWebSocketHandler: WebSocket关闭！
+2017-11-22 19:49:11,070 DEBUG [https-jsse-nio-9000-exec-8] HandshakeInterceptor: 握手前...null
+2017-11-22 19:49:11,073 DEBUG [https-jsse-nio-9000-exec-8] HandshakeInterceptor: 握手后...
+2017-11-22 19:49:11,074 DEBUG [https-jsse-nio-9000-exec-8] SystemWebSocketHandler: 链接webSocket成功
+2017-11-22 19:50:24,667 DEBUG [https-jsse-nio-9000-exec-4] SystemWebSocketHandler: WebSocket出错！
+2017-11-22 19:50:24,668 DEBUG [https-jsse-nio-9000-exec-4] SystemWebSocketHandler: WebSocket关闭！
+2017-11-22 19:50:24,827 DEBUG [https-jsse-nio-9000-exec-4] HandshakeInterceptor: 握手前...null
+2017-11-22 19:50:24,829 DEBUG [https-jsse-nio-9000-exec-4] HandshakeInterceptor: 握手后...
+2017-11-22 19:50:24,830 DEBUG [https-jsse-nio-9000-exec-4] SystemWebSocketHandler: 链接webSocket成功
+2017-11-22 19:50:44,281 DEBUG [https-jsse-nio-9000-exec-10] SystemWebSocketHandler: WebSocket出错！
+2017-11-22 19:50:44,282 DEBUG [https-jsse-nio-9000-exec-10] SystemWebSocketHandler: WebSocket关闭！
+2017-11-22 19:52:03,083 INFO  [main] Application: Starting Application on zhaoyawendeMacBook-Pro.local with PID 9210 (/Users/zhaoyawen/Documents/14302010057-ZhaoYaWen/chat/target/classes started by zhaoyawen in /Users/zhaoyawen/Documents/14302010057-ZhaoYaWen/chat)
+2017-11-22 19:52:03,085 DEBUG [main] Application: Running with Spring Boot v1.5.3.RELEASE, Spring v4.3.8.RELEASE
+2017-11-22 19:52:03,086 INFO  [main] Application: The following profiles are active: dev
+2017-11-22 19:52:03,419 DEBUG [background-preinit] logging: Logging Provider: org.jboss.logging.Slf4jLoggerProvider found via system property
+2017-11-22 19:52:04,650 INFO  [localhost-startStop-1] WebConfigurer: Web application configuration, using profiles: [dev]
+2017-11-22 19:52:04,650 INFO  [localhost-startStop-1] WebConfigurer: Web application fully configured
+2017-11-22 19:52:05,701 INFO  [main] Application: Running with Spring profile(s) : [dev]
+2017-11-22 19:52:06,358 INFO  [main] WebSocketConfig: 注册spring websocket开始
+2017-11-22 19:52:06,361 INFO  [main] WebSocketConfig: 注册spring websocket成功
+2017-11-22 19:52:07,151 INFO  [main] Application: Started Application in 4.478 seconds (JVM running for 5.144)
+2017-11-22 19:52:07,152 INFO  [main] Application: Access URLs:
+----------------------------------------------------------
+	Local: 		https://127.0.0.1:9000/chat
+	External: 	https://127.0.0.1:9000/chat
+----------------------------------------------------------
+2017-11-22 19:52:28,430 DEBUG [background-preinit] logging: Logging Provider: org.jboss.logging.Slf4jLoggerProvider found via system property
+2017-11-22 19:52:28,436 INFO  [main] Application: Starting Application on zhaoyawendeMacBook-Pro.local with PID 9214 (/Users/zhaoyawen/Documents/14302010057-ZhaoYaWen/chat/target/classes started by zhaoyawen in /Users/zhaoyawen/Documents/14302010057-ZhaoYaWen/chat)
+2017-11-22 19:52:28,437 DEBUG [main] Application: Running with Spring Boot v1.5.3.RELEASE, Spring v4.3.8.RELEASE
+2017-11-22 19:52:28,437 INFO  [main] Application: The following profiles are active: dev
+2017-11-22 19:52:31,441 INFO  [localhost-startStop-1] WebConfigurer: Web application configuration, using profiles: [dev]
+2017-11-22 19:52:31,441 INFO  [localhost-startStop-1] WebConfigurer: Web application fully configured
+2017-11-22 19:52:33,644 INFO  [main] Application: Running with Spring profile(s) : [dev]
+2017-11-22 19:54:03,768 WARN  [HikariPool-1 housekeeper] HikariPool: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m30s921ms).
+2017-11-22 19:54:03,770 INFO  [main] WebSocketConfig: 注册spring websocket开始
+2017-11-22 19:56:37,666 WARN  [HikariPool-1 housekeeper] HikariPool: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m3s203ms).
+2017-11-22 19:56:37,666 INFO  [main] WebSocketConfig: 注册spring websocket成功
+2017-11-22 19:56:40,043 INFO  [main] Application: Started Application in 252.567 seconds (JVM running for 257.115)
+2017-11-22 19:56:40,046 INFO  [main] Application: Access URLs:
+----------------------------------------------------------
+	Local: 		https://127.0.0.1:9000/chat
+	External: 	https://127.0.0.1:9000/chat
+----------------------------------------------------------
+2017-11-22 19:56:52,132 DEBUG [background-preinit] logging: Logging Provider: org.jboss.logging.Slf4jLoggerProvider found via system property
+2017-11-22 19:56:52,191 INFO  [main] Application: Starting Application on zhaoyawendeMacBook-Pro.local with PID 9231 (/Users/zhaoyawen/Documents/14302010057-ZhaoYaWen/chat/target/classes started by zhaoyawen in /Users/zhaoyawen/Documents/14302010057-ZhaoYaWen/chat)
+2017-11-22 19:56:52,191 DEBUG [main] Application: Running with Spring Boot v1.5.3.RELEASE, Spring v4.3.8.RELEASE
+2017-11-22 19:56:52,191 INFO  [main] Application: The following profiles are active: dev
+2017-11-22 19:56:54,813 INFO  [localhost-startStop-1] WebConfigurer: Web application configuration, using profiles: [dev]
+2017-11-22 19:56:54,813 INFO  [localhost-startStop-1] WebConfigurer: Web application fully configured
+2017-11-22 19:56:56,727 INFO  [main] Application: Running with Spring profile(s) : [dev]
+2017-11-22 19:57:00,851 INFO  [main] WebSocketConfig: 注册spring websocket开始
+2017-11-22 19:57:49,516 INFO  [main] WebSocketConfig: 注册spring websocket成功
+2017-11-22 19:57:50,776 INFO  [main] Application: Started Application in 59.54 seconds (JVM running for 64.116)
+2017-11-22 19:57:50,778 INFO  [main] Application: Access URLs:
+----------------------------------------------------------
+	Local: 		https://127.0.0.1:9000/chat
+	External: 	https://127.0.0.1:9000/chat
+----------------------------------------------------------
+2017-11-22 20:02:02,031 DEBUG [https-jsse-nio-9000-exec-3] HandshakeInterceptor: 握手前...null
+2017-11-22 20:02:02,094 DEBUG [https-jsse-nio-9000-exec-3] HandshakeInterceptor: 握手后...
+2017-11-22 20:02:02,138 DEBUG [https-jsse-nio-9000-exec-3] SystemWebSocketHandler: 链接webSocket成功
+2017-11-22 20:04:01,633 DEBUG [https-jsse-nio-9000-exec-5] SystemWebSocketHandler: WebSocket出错！
+2017-11-22 20:04:01,634 DEBUG [https-jsse-nio-9000-exec-5] SystemWebSocketHandler: WebSocket关闭！
+2017-11-22 20:04:01,842 DEBUG [https-jsse-nio-9000-exec-8] HandshakeInterceptor: 握手前...null
+2017-11-22 20:04:01,844 DEBUG [https-jsse-nio-9000-exec-8] HandshakeInterceptor: 握手后...
+2017-11-22 20:04:01,845 DEBUG [https-jsse-nio-9000-exec-8] SystemWebSocketHandler: 链接webSocket成功
+2017-11-22 20:06:45,672 INFO  [main] Application: Starting Application on zhaoyawendeMacBook-Pro.local with PID 9263 (/Users/zhaoyawen/IdeaProjects/chat/target/classes started by zhaoyawen in /Users/zhaoyawen/IdeaProjects/chat)
+2017-11-22 20:06:45,675 DEBUG [main] Application: Running with Spring Boot v1.5.3.RELEASE, Spring v4.3.8.RELEASE
+2017-11-22 20:06:45,676 INFO  [main] Application: The following profiles are active: dev
+2017-11-22 20:06:46,049 DEBUG [background-preinit] logging: Logging Provider: org.jboss.logging.Slf4jLoggerProvider found via system property
+2017-11-22 20:06:47,391 INFO  [localhost-startStop-1] WebConfigurer: Web application configuration, using profiles: [dev]
+2017-11-22 20:06:47,391 INFO  [localhost-startStop-1] WebConfigurer: Web application fully configured
+2017-11-22 20:06:48,436 INFO  [main] Application: Running with Spring profile(s) : [dev]
+2017-11-22 20:06:49,116 INFO  [main] WebSocketConfig: 注册spring websocket开始
+2017-11-22 20:06:49,118 INFO  [main] WebSocketConfig: 注册spring websocket成功
+2017-11-22 20:06:49,874 INFO  [main] Application: Started Application in 4.635 seconds (JVM running for 5.38)
+2017-11-22 20:06:49,876 INFO  [main] Application: Access URLs:
+----------------------------------------------------------
+	Local: 		https://127.0.0.1:9000/chat
+	External: 	https://127.0.0.1:9000/chat
+----------------------------------------------------------
+2017-11-22 20:07:02,960 DEBUG [https-jsse-nio-9000-exec-1] HandshakeInterceptor: 握手前...null
+2017-11-22 20:07:02,983 DEBUG [https-jsse-nio-9000-exec-1] HandshakeInterceptor: 握手后...
+2017-11-22 20:07:02,996 DEBUG [https-jsse-nio-9000-exec-1] SystemWebSocketHandler: 链接webSocket成功
+2017-11-22 20:07:40,491 INFO  [main] Application: Starting Application on zhaoyawendeMacBook-Pro.local with PID 9268 (/Users/zhaoyawen/IdeaProjects/chat/target/classes started by zhaoyawen in /Users/zhaoyawen/IdeaProjects/chat)
+2017-11-22 20:07:40,494 DEBUG [main] Application: Running with Spring Boot v1.5.3.RELEASE, Spring v4.3.8.RELEASE
+2017-11-22 20:07:40,495 INFO  [main] Application: The following profiles are active: dev
+2017-11-22 20:07:41,073 DEBUG [background-preinit] logging: Logging Provider: org.jboss.logging.Slf4jLoggerProvider found via system property
+2017-11-22 20:07:42,506 INFO  [localhost-startStop-1] WebConfigurer: Web application configuration, using profiles: [dev]
+2017-11-22 20:07:42,506 INFO  [localhost-startStop-1] WebConfigurer: Web application fully configured
+2017-11-22 20:07:43,774 INFO  [main] Application: Running with Spring profile(s) : [dev]
+2017-11-22 20:07:44,510 INFO  [main] WebSocketConfig: 注册spring websocket开始
+2017-11-22 20:07:44,512 INFO  [main] WebSocketConfig: 注册spring websocket成功
+2017-11-22 20:07:45,331 INFO  [main] Application: Started Application in 5.496 seconds (JVM running for 6.207)
+2017-11-22 20:07:45,332 INFO  [main] Application: Access URLs:
+----------------------------------------------------------
+	Local: 		https://127.0.0.1:9000/chat
+	External: 	https://127.0.0.1:9000/chat
+----------------------------------------------------------
+2017-11-22 20:10:32,942 DEBUG [https-jsse-nio-9000-exec-5] HandshakeInterceptor: 握手前...null
+2017-11-22 20:10:32,969 DEBUG [https-jsse-nio-9000-exec-5] HandshakeInterceptor: 握手后...
+2017-11-22 20:10:32,980 DEBUG [https-jsse-nio-9000-exec-5] SystemWebSocketHandler: 链接webSocket成功
+2017-11-22 20:11:19,650 DEBUG [https-jsse-nio-9000-exec-4] SystemWebSocketHandler: WebSocket出错！
+2017-11-22 20:11:19,650 DEBUG [https-jsse-nio-9000-exec-4] SystemWebSocketHandler: WebSocket关闭！
+2017-11-22 20:11:19,888 DEBUG [https-jsse-nio-9000-exec-2] HandshakeInterceptor: 握手前...null
+2017-11-22 20:11:19,891 DEBUG [https-jsse-nio-9000-exec-2] HandshakeInterceptor: 握手后...
+2017-11-22 20:11:19,892 DEBUG [https-jsse-nio-9000-exec-2] SystemWebSocketHandler: 链接webSocket成功
+2017-11-22 20:13:14,922 DEBUG [https-jsse-nio-9000-exec-10] SystemWebSocketHandler: WebSocket出错！
+2017-11-22 20:13:14,923 DEBUG [https-jsse-nio-9000-exec-10] SystemWebSocketHandler: WebSocket关闭！
+2017-11-22 20:13:15,122 DEBUG [https-jsse-nio-9000-exec-2] HandshakeInterceptor: 握手前...null
+2017-11-22 20:13:15,125 DEBUG [https-jsse-nio-9000-exec-2] HandshakeInterceptor: 握手后...
+2017-11-22 20:13:15,127 DEBUG [https-jsse-nio-9000-exec-2] SystemWebSocketHandler: 链接webSocket成功
+2017-11-22 20:14:44,942 DEBUG [https-jsse-nio-9000-exec-4] SystemWebSocketHandler: WebSocket出错！
+2017-11-22 20:14:44,942 DEBUG [https-jsse-nio-9000-exec-4] SystemWebSocketHandler: WebSocket关闭！
+2017-11-22 20:14:45,129 DEBUG [https-jsse-nio-9000-exec-8] HandshakeInterceptor: 握手前...null
+2017-11-22 20:14:45,132 DEBUG [https-jsse-nio-9000-exec-8] HandshakeInterceptor: 握手后...
+2017-11-22 20:14:45,132 DEBUG [https-jsse-nio-9000-exec-8] SystemWebSocketHandler: 链接webSocket成功
+2017-11-22 20:15:15,491 DEBUG [https-jsse-nio-9000-exec-4] SystemWebSocketHandler: WebSocket出错！
+2017-11-22 20:15:15,493 DEBUG [https-jsse-nio-9000-exec-4] SystemWebSocketHandler: WebSocket关闭！
+2017-11-22 20:15:15,660 DEBUG [https-jsse-nio-9000-exec-8] HandshakeInterceptor: 握手前...null
+2017-11-22 20:15:15,663 DEBUG [https-jsse-nio-9000-exec-8] HandshakeInterceptor: 握手后...
+2017-11-22 20:15:15,663 DEBUG [https-jsse-nio-9000-exec-8] SystemWebSocketHandler: 链接webSocket成功
+2017-11-22 20:16:47,812 DEBUG [https-jsse-nio-9000-exec-8] SystemWebSocketHandler: WebSocket关闭！
+2017-11-22 20:16:47,991 DEBUG [https-jsse-nio-9000-exec-8] HandshakeInterceptor: 握手前...null
+2017-11-22 20:16:47,993 DEBUG [https-jsse-nio-9000-exec-8] HandshakeInterceptor: 握手后...
+2017-11-22 20:16:47,994 DEBUG [https-jsse-nio-9000-exec-8] SystemWebSocketHandler: 链接webSocket成功
+2017-11-22 20:17:20,206 DEBUG [background-preinit] logging: Logging Provider: org.jboss.logging.Slf4jLoggerProvider found via system property
+2017-11-22 20:17:20,279 INFO  [main] Application: Starting Application on zhaoyawendeMacBook-Pro.local with PID 9276 (/Users/zhaoyawen/IdeaProjects/chat/target/classes started by zhaoyawen in /Users/zhaoyawen/IdeaProjects/chat)
+2017-11-22 20:17:20,279 DEBUG [main] Application: Running with Spring Boot v1.5.3.RELEASE, Spring v4.3.8.RELEASE
+2017-11-22 20:17:20,280 INFO  [main] Application: The following profiles are active: dev
+2017-11-22 20:17:23,206 INFO  [localhost-startStop-1] WebConfigurer: Web application configuration, using profiles: [dev]
+2017-11-22 20:17:23,206 INFO  [localhost-startStop-1] WebConfigurer: Web application fully configured
+2017-11-22 20:17:25,401 INFO  [main] Application: Running with Spring profile(s) : [dev]
+2017-11-22 20:17:26,664 INFO  [main] WebSocketConfig: 注册spring websocket开始
+2017-11-22 20:17:26,668 INFO  [main] WebSocketConfig: 注册spring websocket成功
+2017-11-22 20:17:27,842 INFO  [main] Application: Started Application in 8.735 seconds (JVM running for 13.707)
+2017-11-22 20:17:27,844 INFO  [main] Application: Access URLs:
+----------------------------------------------------------
+	Local: 		https://127.0.0.1:9000/chat
+	External: 	https://127.0.0.1:9000/chat
+----------------------------------------------------------
+2017-11-22 20:17:31,296 DEBUG [https-jsse-nio-9000-exec-7] HandshakeInterceptor: 握手前...null
+2017-11-22 20:17:31,343 DEBUG [https-jsse-nio-9000-exec-7] HandshakeInterceptor: 握手后...
+2017-11-22 20:17:31,372 DEBUG [https-jsse-nio-9000-exec-7] SystemWebSocketHandler: 链接webSocket成功
+2017-11-22 20:26:47,280 INFO  [main] Application: Starting Application on zhaoyawendeMacBook-Pro.local with PID 9298 (/Users/zhaoyawen/IdeaProjects/MahjongGame/target/classes started by zhaoyawen in /Users/zhaoyawen/IdeaProjects/MahjongGame)
+2017-11-22 20:26:47,283 DEBUG [main] Application: Running with Spring Boot v1.5.3.RELEASE, Spring v4.3.8.RELEASE
+2017-11-22 20:26:47,283 INFO  [main] Application: The following profiles are active: dev
+2017-11-22 20:26:47,584 DEBUG [background-preinit] logging: Logging Provider: org.jboss.logging.Slf4jLoggerProvider found via system property
+2017-11-22 20:26:48,827 INFO  [localhost-startStop-1] WebConfigurer: Web application configuration, using profiles: [dev]
+2017-11-22 20:26:48,827 INFO  [localhost-startStop-1] WebConfigurer: Web application fully configured
+2017-11-22 20:26:49,871 INFO  [main] Application: Running with Spring profile(s) : [dev]
+2017-11-22 20:26:50,573 INFO  [main] WebSocketConfig: 注册spring websocket开始
+2017-11-22 20:26:50,575 INFO  [main] WebSocketConfig: 注册spring websocket成功
+2017-11-22 20:26:51,376 INFO  [main] Application: Started Application in 4.627 seconds (JVM running for 5.382)
+2017-11-22 20:26:51,378 INFO  [main] Application: Access URLs:
+----------------------------------------------------------
+	Local: 		https://127.0.0.1:9000/chat
+	External: 	https://127.0.0.1:9000/chat
+----------------------------------------------------------
+2017-11-22 20:26:55,388 DEBUG [https-jsse-nio-9000-exec-8] HandshakeInterceptor: 握手前...null
+2017-11-22 20:26:55,421 DEBUG [https-jsse-nio-9000-exec-8] HandshakeInterceptor: 握手后...
+2017-11-22 20:26:55,438 DEBUG [https-jsse-nio-9000-exec-8] SystemWebSocketHandler: 链接webSocket成功
+2017-11-22 20:28:54,414 INFO  [main] Application: Starting Application on zhaoyawendeMacBook-Pro.local with PID 9302 (/Users/zhaoyawen/IdeaProjects/MahjongGame/target/classes started by zhaoyawen in /Users/zhaoyawen/IdeaProjects/MahjongGame)
+2017-11-22 20:28:54,417 DEBUG [main] Application: Running with Spring Boot v1.5.3.RELEASE, Spring v4.3.8.RELEASE
+2017-11-22 20:28:54,417 INFO  [main] Application: The following profiles are active: dev
+2017-11-22 20:28:54,671 DEBUG [background-preinit] logging: Logging Provider: org.jboss.logging.Slf4jLoggerProvider found via system property
+2017-11-22 20:28:55,994 INFO  [localhost-startStop-1] WebConfigurer: Web application configuration, using profiles: [dev]
+2017-11-22 20:28:55,995 INFO  [localhost-startStop-1] WebConfigurer: Web application fully configured
+2017-11-22 20:28:57,184 INFO  [main] Application: Running with Spring profile(s) : [dev]
+2017-11-22 20:28:57,863 INFO  [main] WebSocketConfig: 注册spring websocket开始
+2017-11-22 20:28:57,865 INFO  [main] WebSocketConfig: 注册spring websocket成功
+2017-11-22 20:28:58,642 INFO  [main] Application: Started Application in 4.626 seconds (JVM running for 5.261)
+2017-11-22 20:28:58,643 INFO  [main] Application: Access URLs:
+----------------------------------------------------------
+	Local: 		https://127.0.0.1:9000/game
+	External: 	https://127.0.0.1:9000/game
+----------------------------------------------------------
+2017-11-22 20:30:10,852 DEBUG [https-jsse-nio-9000-exec-6] HandshakeInterceptor: 握手前...null
+2017-11-22 20:30:10,885 DEBUG [https-jsse-nio-9000-exec-6] HandshakeInterceptor: 握手后...
+2017-11-22 20:30:10,899 DEBUG [https-jsse-nio-9000-exec-6] SystemWebSocketHandler: 链接webSocket成功
+2017-11-22 20:31:10,322 DEBUG [localhost-startStop-2] SystemWebSocketHandler: WebSocket关闭！
+2017-11-22 20:31:49,679 INFO  [main] Application: Starting Application on zhaoyawendeMacBook-Pro.local with PID 9316 (/Users/zhaoyawen/IdeaProjects/MahjongGame/target/classes started by zhaoyawen in /Users/zhaoyawen/IdeaProjects/MahjongGame)
+2017-11-22 20:31:49,685 DEBUG [main] Application: Running with Spring Boot v1.5.3.RELEASE, Spring v4.3.8.RELEASE
+2017-11-22 20:31:49,686 INFO  [main] Application: The following profiles are active: dev
+2017-11-22 20:31:50,120 DEBUG [background-preinit] logging: Logging Provider: org.jboss.logging.Slf4jLoggerProvider found via system property
+2017-11-22 20:31:51,331 INFO  [localhost-startStop-1] WebConfigurer: Web application configuration, using profiles: [dev]
+2017-11-22 20:31:51,332 INFO  [localhost-startStop-1] WebConfigurer: Web application fully configured
+2017-11-22 20:31:52,446 INFO  [main] Application: Running with Spring profile(s) : [dev]
+2017-11-22 20:31:52,469 WARN  [main] AnnotationConfigEmbeddedWebApplicationContext: Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'systemWebSocketHandler': Unsatisfied dependency expressed through field 'loginService'; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'loginService': Unsatisfied dependency expressed through field 'webUserRepository'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'org.mahjong.game.repository.WebUserRepository' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@javax.inject.Inject()}
+2017-11-22 20:31:52,555 ERROR [main] LoggingFailureAnalysisReporter: 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field webUserRepository in org.mahjong.game.service.LoginService required a bean of type 'org.mahjong.game.repository.WebUserRepository' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'org.mahjong.game.repository.WebUserRepository' in your configuration.
+
+2017-11-22 20:33:22,277 INFO  [main] Application: Starting Application on zhaoyawendeMacBook-Pro.local with PID 9319 (/Users/zhaoyawen/IdeaProjects/MahjongGame/target/classes started by zhaoyawen in /Users/zhaoyawen/IdeaProjects/MahjongGame)
+2017-11-22 20:33:22,281 DEBUG [main] Application: Running with Spring Boot v1.5.3.RELEASE, Spring v4.3.8.RELEASE
+2017-11-22 20:33:22,281 INFO  [main] Application: The following profiles are active: dev
+2017-11-22 20:33:22,862 DEBUG [background-preinit] logging: Logging Provider: org.jboss.logging.Slf4jLoggerProvider found via system property
+2017-11-22 20:33:24,600 INFO  [localhost-startStop-1] WebConfigurer: Web application configuration, using profiles: [dev]
+2017-11-22 20:33:24,600 INFO  [localhost-startStop-1] WebConfigurer: Web application fully configured
+2017-11-22 20:33:25,770 INFO  [main] Application: Running with Spring profile(s) : [dev]
+2017-11-22 20:33:25,792 WARN  [main] AnnotationConfigEmbeddedWebApplicationContext: Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'systemWebSocketHandler': Unsatisfied dependency expressed through field 'loginService'; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'loginService': Unsatisfied dependency expressed through field 'webUserRepository'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'org.mahjong.game.repository.WebUserRepository' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@javax.inject.Inject()}
+2017-11-22 20:33:25,864 ERROR [main] LoggingFailureAnalysisReporter: 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field webUserRepository in org.mahjong.game.service.LoginService required a bean of type 'org.mahjong.game.repository.WebUserRepository' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'org.mahjong.game.repository.WebUserRepository' in your configuration.
+
+2017-11-22 20:34:40,527 INFO  [main] Application: Starting Application on zhaoyawendeMacBook-Pro.local with PID 9325 (/Users/zhaoyawen/IdeaProjects/MahjongGame/target/classes started by zhaoyawen in /Users/zhaoyawen/IdeaProjects/MahjongGame)
+2017-11-22 20:34:40,530 DEBUG [main] Application: Running with Spring Boot v1.5.3.RELEASE, Spring v4.3.8.RELEASE
+2017-11-22 20:34:40,530 INFO  [main] Application: The following profiles are active: dev
+2017-11-22 20:34:40,921 DEBUG [background-preinit] logging: Logging Provider: org.jboss.logging.Slf4jLoggerProvider found via system property
+2017-11-22 20:34:42,195 INFO  [localhost-startStop-1] WebConfigurer: Web application configuration, using profiles: [dev]
+2017-11-22 20:34:42,196 INFO  [localhost-startStop-1] WebConfigurer: Web application fully configured
+2017-11-22 20:34:43,291 INFO  [main] Application: Running with Spring profile(s) : [dev]
+2017-11-22 20:34:43,315 WARN  [main] AnnotationConfigEmbeddedWebApplicationContext: Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'systemWebSocketHandler': Unsatisfied dependency expressed through field 'loginService'; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'loginService': Unsatisfied dependency expressed through field 'webUserRepository'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'org.mahjong.game.repository.WebUserRepository' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@javax.inject.Inject()}
+2017-11-22 20:34:43,383 ERROR [main] LoggingFailureAnalysisReporter: 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field webUserRepository in org.mahjong.game.service.LoginService required a bean of type 'org.mahjong.game.repository.WebUserRepository' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'org.mahjong.game.repository.WebUserRepository' in your configuration.
+
+2017-11-22 20:38:19,870 INFO  [main] Application: Starting Application on zhaoyawendeMacBook-Pro.local with PID 9390 (/Users/zhaoyawen/IdeaProjects/MahjongGame/target/classes started by zhaoyawen in /Users/zhaoyawen/IdeaProjects/MahjongGame)
+2017-11-22 20:38:19,874 DEBUG [main] Application: Running with Spring Boot v1.5.3.RELEASE, Spring v4.3.8.RELEASE
+2017-11-22 20:38:19,875 INFO  [main] Application: The following profiles are active: dev
+2017-11-22 20:38:20,156 DEBUG [background-preinit] logging: Logging Provider: org.jboss.logging.Slf4jLoggerProvider found via system property
+2017-11-22 20:38:21,567 INFO  [localhost-startStop-1] WebConfigurer: Web application configuration, using profiles: [dev]
+2017-11-22 20:38:21,567 INFO  [localhost-startStop-1] WebConfigurer: Web application fully configured
+2017-11-22 20:38:22,865 INFO  [main] Application: Running with Spring profile(s) : [dev]
+2017-11-22 20:38:22,896 WARN  [main] AnnotationConfigEmbeddedWebApplicationContext: Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'systemWebSocketHandler': Unsatisfied dependency expressed through field 'loginService'; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'loginService': Unsatisfied dependency expressed through field 'webUserRepository'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'org.mahjong.game.repository.WebUserRepository' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@javax.inject.Inject()}
+2017-11-22 20:38:22,981 ERROR [main] LoggingFailureAnalysisReporter: 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field webUserRepository in org.mahjong.game.service.LoginService required a bean of type 'org.mahjong.game.repository.WebUserRepository' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'org.mahjong.game.repository.WebUserRepository' in your configuration.
+
+2017-11-22 20:40:37,010 INFO  [main] Application: Starting Application on zhaoyawendeMacBook-Pro.local with PID 9394 (/Users/zhaoyawen/IdeaProjects/MahjongGame/target/classes started by zhaoyawen in /Users/zhaoyawen/IdeaProjects/MahjongGame)
+2017-11-22 20:40:37,013 DEBUG [main] Application: Running with Spring Boot v1.5.3.RELEASE, Spring v4.3.8.RELEASE
+2017-11-22 20:40:37,014 INFO  [main] Application: The following profiles are active: dev
+2017-11-22 20:40:37,357 DEBUG [background-preinit] logging: Logging Provider: org.jboss.logging.Slf4jLoggerProvider found via system property
+2017-11-22 20:40:38,678 INFO  [localhost-startStop-1] WebConfigurer: Web application configuration, using profiles: [dev]
+2017-11-22 20:40:38,678 INFO  [localhost-startStop-1] WebConfigurer: Web application fully configured
+2017-11-22 20:40:39,723 INFO  [main] Application: Running with Spring profile(s) : [dev]
+2017-11-22 20:40:40,379 INFO  [main] WebSocketConfig: 注册spring websocket开始
+2017-11-22 20:40:40,382 INFO  [main] WebSocketConfig: 注册spring websocket成功
+2017-11-22 20:40:41,273 INFO  [main] Application: Started Application in 4.702 seconds (JVM running for 5.493)
+2017-11-22 20:40:41,275 INFO  [main] Application: Access URLs:
+----------------------------------------------------------
+	Local: 		https://127.0.0.1:9000/game
+	External: 	https://127.0.0.1:9000/game
+----------------------------------------------------------
+2017-11-22 20:40:48,707 DEBUG [https-jsse-nio-9000-exec-2] HandshakeInterceptor: 握手前...null
+2017-11-22 20:40:48,738 DEBUG [https-jsse-nio-9000-exec-2] HandshakeInterceptor: 握手后...
+2017-11-22 20:40:48,752 DEBUG [https-jsse-nio-9000-exec-2] SystemWebSocketHandler: 链接webSocket成功

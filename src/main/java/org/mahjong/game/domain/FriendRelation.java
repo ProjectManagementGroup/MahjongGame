@@ -16,18 +16,11 @@ public class FriendRelation {
 
     @ManyToOne
     @JoinColumn(name = "user1_id")
-    private WebUser webUser1;
+    private User webUser1;
 
     @ManyToOne
     @JoinColumn(name = "user2_id")
-    private WebUser webUser2;
-
-
-    //flag = 0表示二人是朋友关系
-    //flag = 1表示user1向user2发请求，同意或者拒绝后结束后就删掉这条数据
-    //数据库不保存同意或者拒绝，同意设置这个flag是0，拒绝就默默失败，不提示
-    //发送请求的人总是user1，所以只需要查userName=webUser2.name的就可以知道自己收到的请求
-    private int flag;
+    private User webUser2;
 
     public Long getId() {
         return id;
@@ -37,27 +30,19 @@ public class FriendRelation {
         this.id = id;
     }
 
-    public WebUser getWebUser1() {
+    public User getWebUser1() {
         return webUser1;
     }
 
-    public void setWebUser1(WebUser webUser1) {
+    public void setWebUser1(User webUser1) {
         this.webUser1 = webUser1;
     }
 
-    public WebUser getWebUser2() {
+    public User getWebUser2() {
         return webUser2;
     }
 
-    public void setWebUser2(WebUser webUser2) {
+    public void setWebUser2(User webUser2) {
         this.webUser2 = webUser2;
-    }
-
-    public int getFlag() {
-        return flag;
-    }
-
-    public void setFlag(int flag) {
-        this.flag = flag;
     }
 }

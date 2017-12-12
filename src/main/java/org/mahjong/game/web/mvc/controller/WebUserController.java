@@ -1,6 +1,6 @@
 package org.mahjong.game.web.mvc.controller;
 
-import org.mahjong.game.repository.WebUserRepository;
+import org.mahjong.game.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -8,8 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.mahjong.game.domain.FriendRelation;
-import org.mahjong.game.domain.WebUser;
-import org.mahjong.game.repository.ChatMessageRepository;
+import org.mahjong.game.domain.User;
 import org.mahjong.game.repository.FriendRelationRepository;
 
 import javax.inject.Inject;
@@ -25,13 +24,10 @@ public class WebUserController {
     private final Logger log = LoggerFactory.getLogger(WebUserController.class);
 
     @Inject
-    private WebUserRepository webUserRepository;
+    private UserRepository webUserRepository;
 
     @Inject
     private FriendRelationRepository friendRelationRepository;
-
-    @Inject
-    private ChatMessageRepository chatMessageRepository;
 
     //登陆之后才确定了session，只有session就不变化了
     @RequestMapping(value = "/login")
@@ -47,7 +43,7 @@ public class WebUserController {
     public String friendList(@RequestParam(value = "userName") String userName, final Model model, HttpSession session) {
         //String time = DateTime.now().toString("yyyyMMddHHmmss");
         //session.setAttribute("user", time);
-        Optional<WebUser> _user = webUserRepository.findOneByUserName(userName);
+        Optional<User> _user = webUserRepository.findOneByUserName(userName);
         if (!_user.isPresent()) {
             System.err.println("当前用户不存在！");
             return null;
@@ -67,7 +63,7 @@ public class WebUserController {
     //请求 我收到的好友请求页面
     @RequestMapping(value = "/friendApply")
     public String friendApply(@RequestParam(value = "userName") String userName, final Model model, HttpSession session) {
-        Optional<WebUser> _user = webUserRepository.findOneByUserName(userName);
+        Optional<User> _user = webUserRepository.findOneByUserName(userName);
         if (!_user.isPresent()) {
             System.err.println("当前用户不存在！");
             return null;

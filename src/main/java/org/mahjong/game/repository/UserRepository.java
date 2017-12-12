@@ -3,7 +3,7 @@ package org.mahjong.game.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
-import org.mahjong.game.domain.WebUser;
+import org.mahjong.game.domain.User;
 
 import java.util.Optional;
 
@@ -11,8 +11,8 @@ import java.util.Optional;
  * Created by zhaoyawen on 2017/3/2.
  */
 @Repository
-public interface WebUserRepository extends JpaRepository<WebUser, Long>, JpaSpecificationExecutor<WebUser> {
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
-    Optional<WebUser> findOneByUserName(String userName);
+    Optional<User> findOneByUserName(String userName);
 
 }

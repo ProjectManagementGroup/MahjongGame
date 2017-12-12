@@ -19,8 +19,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @SpringBootApplication
-@ComponentScan
-@EnableAutoConfiguration
 public class Application {
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);

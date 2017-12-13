@@ -74,6 +74,14 @@ public class SystemWebSocketHandler implements WebSocketHandler {
                 userService.register(payloadArray, session);
                 break;
             /**
+             * 发送准备请求
+             * ready|
+             * 加入房间后可以准备
+             */
+            case "ready"://有人发送了消息,也可能是文件
+                userService.setReady(session);
+                break;
+            /**
              * 随机加入房间游戏
              * join-random|
              */
@@ -82,7 +90,7 @@ public class SystemWebSocketHandler implements WebSocketHandler {
                 break;
             /**
              * 创建好友房间并邀请三个好友
-             * invite|friend1|friend2|friend3
+             * invite|f1|f2|f3
              * friendx是朋友的用户名
              */
             case "invite":
@@ -123,7 +131,7 @@ public class SystemWebSocketHandler implements WebSocketHandler {
              * bump|
              */
             case "bump":
-                gameService.bumpOrEat(session, "nump");
+                gameService.bumpOrEat(session, "bump");
                 break;
             /**
              * 吃

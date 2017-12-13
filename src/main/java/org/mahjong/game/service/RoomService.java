@@ -2,9 +2,11 @@ package org.mahjong.game.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import jdk.nashorn.internal.parser.JSONParser;
 import org.joda.time.DateTime;
 import org.mahjong.game.Constants;
 import org.mahjong.game.config.SystemWebSocketHandler;
@@ -19,6 +21,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,7 +56,6 @@ public class RoomService {
         Long id = Long.parseLong(DateTime.now().toString("yyyyMMddHHmmss"));//时间戳就是id，一定是唯一的
         room.setId(id);
         room.setFriendly(false);
-        room.setReady(false);
         room.setIndex(0);
         room.setPlaying(false);
         List<Constants.MahjongTile> list = Lists.newLinkedList(Constants.getMahjongTiles());
@@ -71,7 +73,6 @@ public class RoomService {
         room.setPlaying(false);
         room.setIndex(0);
         room.setLastTile(null);
-        room.setReady(false);
         room.setTimerStart(null);
         room.setRequests(Lists.newLinkedList());
         log.info("重置房间{},并将房间内玩家设置为未准备状态", room.getId());
@@ -104,18 +105,24 @@ public class RoomService {
             session.sendMessage(new TextMessage(result.toString()));
             return;
         }
-        //获取房间信息
-        boolean b = changeRoomStatus(user.getRoom());
 
         result.setStatus(true);
-        result.setMessage("请求成功");
+        result.setMessage("room information");
 
         //把所有玩家的username和point都广播
-        String list = user.getRoom().getPlayers().stream().map(p -> p.getInfo()).collect(Collectors.joining(",", "[", "]"));
-        Map<String, String> map = Maps.newLinkedHashMap();
+        List<Object> list = Lists.newLinkedList();
+        for (User u : user.getRoom().getPlayers()) {
+            Map<String, Object> map = Maps.newLinkedHashMap();
+            map.put("username", u.getUserName());
+            map.put("point", u.getPoint());
+            map.put("ready", u.isReady());
+            list.add(map);
+        }
+        Map<String, Object> map = Maps.newLinkedHashMap();
         map.put("list", list);
-        map.put("start", Boolean.toString(b));
-        result.setObject(map.entrySet().stream().map(e -> e.getKey() + ":" + e.getValue()).collect(Collectors.joining(",", "{", "}")));
+//        map.put("start", user.getRoom().isPlaying());
+        result.setObject(objectMapper.writeValueAsString(map));
+//        result.setObject(map.entrySet().stream().map(e -> e.getKey() + ":" + e.getValue()).collect(Collectors.joining(",", "{", "}")));
 //        result.setObject(objectMapper.writeValueAsString(map));
         session.sendMessage(new TextMessage(result.toString()));
 
@@ -155,10 +162,11 @@ public class RoomService {
             room = createRoom();
             room.getPlayers().add(user);
             user.setRoom(room);
+            userService.save(user);
             roomMap.put(room.getId(), room);
             log.info("玩家{}创建随机房间{}", user.getUserName(), room.getId());
             result.setStatus(true);
-            result.setMessage("加入随机房间成功");
+            result.setMessage("join random success");
             result.setObject(room.getId() + "");
             session.sendMessage(new TextMessage(result.toString()));
             return;
@@ -166,13 +174,14 @@ public class RoomService {
 
         room.getPlayers().add(user);
         user.setRoom(room);
+        userService.save(user);
 
         result.setStatus(true);
-        result.setMessage("加入随机房间成功");
+        result.setMessage("join random success");
         result.setObject(room.getId() + "");
         session.sendMessage(new TextMessage(result.toString()));
 
-        //给房间里所有人发消息，更新画面
+        //给房间里所有人发消息包括自己，更新画面
         for (User u : room.getPlayers()) {
             if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getUserName())) {//下线的人暂时不管
                 continue;
@@ -181,6 +190,7 @@ public class RoomService {
             broadcastRoomPlayers(socketSession);
         }
     }
+
 
     /**
      * 有个玩家受邀请加入好友房间游戏
@@ -223,10 +233,12 @@ public class RoomService {
         }
         room.getPlayers().add(user);
         user.setRoom(room);
+        userService.save(user);
 
-        result.setStatus(true);
-        result.setMessage("加入好友房间成功");
-        session.sendMessage(new TextMessage(result.toString()));
+//        result.setStatus(true);
+//        result.setMessage("accept success");
+//        result.setObject(payloadArray[1]);
+//        session.sendMessage(new TextMessage(result.toString()));
 
         //给房间里所有人发消息，更新画面
         for (User u : room.getPlayers()) {
@@ -312,32 +324,37 @@ public class RoomService {
         }
 
         //给发送邀请的人发消息
-        result.setMessage("邀请成功");
+        result.setMessage("invite success");
         result.setObject(null);
         session.sendMessage(new TextMessage(result.toString()));
 
         roomMap.put(room.getId(), room);
     }
 
-    /**
-     * 不论哪位用户准备后，都调用这个函数判断游戏是否开始
-     *
-     * @param room
-     * @return
-     */
+    public static void main(String args[]) throws Exception {
+        List<Object> list = Lists.newLinkedList();
 
-    public boolean changeRoomStatus(Room room) {
-        List<User> players = room.getPlayers();
-        if (players.size() < 4) {
-            return false;
-        }
-        for (User user : players) {
-            if (!user.isReady()) {
-                return false;
-            }
-        }
-        room.setReady(true);
-        return true;
+        Map<String, Object> infoMap = Maps.newLinkedHashMap();
+        infoMap.put("username", "123");
+        infoMap.put("point", 123);
+        infoMap.put("ready", true);
+        list.add(infoMap);
+
+        infoMap = Maps.newLinkedHashMap();
+        infoMap.put("username", "456");
+        infoMap.put("point", 455);
+        infoMap.put("ready", false);
+        list.add(infoMap);
+
+        Map<String, Object> map = Maps.newLinkedHashMap();
+        map.put("list", list);
+        map.put("start", true);
+
+        JsonResult result = new JsonResult();
+        result.setObject(objectMapper.writeValueAsString(infoMap));
+        result.setStatus(true);
+        result.setMessage("other out");
+        System.out.println(result.toString());
     }
 
 }

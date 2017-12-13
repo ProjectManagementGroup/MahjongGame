@@ -28,6 +28,9 @@ public class UserService {
     @Inject
     private RoomService roomService;
 
+    public void save(User user) {
+        userRepository.save(user);
+    }
 
     public User getUserFromSession(WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
@@ -64,6 +67,7 @@ public class UserService {
 //        user.setRoom(null);//仍然停留在原房间
         user.setThrownTiles(null);
         user.setOwnTiles(null);
+        save(user);
     }
 
     @Transactional
@@ -113,6 +117,7 @@ public class UserService {
         user.setUserName(username);
         user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
         userRepository.save(user);
+
         jsonResult.setStatus(true);
         jsonResult.setMessage("注册成功");
         session.sendMessage(new TextMessage(jsonResult.toString()));
@@ -123,15 +128,21 @@ public class UserService {
     /**
      * 发送准备请求
      */
-    public void setReady(User user, WebSocketSession session) throws Exception {
+    public void setReady(WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
-        if (user.getRoom() == null) {//不在房间里
-            result.setMessage("玩家不在房间内");
+        User user = getUserFromSession(session);
+        if (user == null) {
+            result.setMessage("用户信息错误，无法加入随机房间");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        if (user.getRoom() == null) {
+            log.error("玩家{}不在房间中，无法准备", user.getUserName());
+            result.setMessage("玩家已经在房间中，无法接受邀请");
             session.sendMessage(new TextMessage(result.toString()));
             return;
         }
         Room room = user.getRoom();
-
         if (RoomService.roomMap.containsKey(room.getId())) {//不在房间里
             result.setMessage("房间不存在");
             session.sendMessage(new TextMessage(result.toString()));

@@ -21,11 +21,6 @@ public class Room {
     private boolean friendly;
 
     /**
-     * 是否全部都准备了
-     */
-    private boolean ready = false;
-
-    /**
      * 是否正在游戏
      */
     private boolean playing = false;
@@ -89,14 +84,6 @@ public class Room {
 
     public void setFriendly(boolean friendly) {
         this.friendly = friendly;
-    }
-
-    public boolean isReady() {
-        return ready;
-    }
-
-    public void setReady(boolean ready) {
-        this.ready = ready;
     }
 
     @Override

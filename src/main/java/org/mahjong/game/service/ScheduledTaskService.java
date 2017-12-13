@@ -3,6 +3,7 @@ package org.mahjong.game.service;
 import org.joda.time.DateTime;
 import org.mahjong.game.Constants;
 import org.mahjong.game.domain.Room;
+import org.mahjong.game.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -35,10 +36,17 @@ public class ScheduledTaskService {
     @Transactional
     @Async
     public void checkRoomStart() throws Exception {
+        A:
         for (Room room : RoomService.roomMap.values()) {
-            if (!room.isReady()) {
+            if (room.getPlayers().size() != 4 || room.isPlaying()) {//如果房间已经在游戏，就不能重复开始
                 continue;
             }
+            for (User user : room.getPlayers()) {
+                if (!user.isReady()) {
+                    continue A;
+                }
+            }
+            //如果都准备了，那么就开始游戏
             gameService.gameStart(room);
         }
     }

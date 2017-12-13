@@ -47,6 +47,6 @@ public class JsonResult {
 
     @Override
     public String toString() {
-        return "{\"ok\": " + status + ", \"message\": " + message + ", \"object\": " + object + "}";
+        return "{\"ok\": " + status + ", \"message\": \"" + message + "\", \"object\": " + object + "}";
     }
 }

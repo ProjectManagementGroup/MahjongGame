@@ -1,10 +1,12 @@
 package org.mahjong.game.domain;
 
+import com.google.common.collect.Maps;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.mahjong.game.Constants;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhaoyawen on 2017/5/16.
@@ -135,7 +137,4 @@ public class User {
         return result;
     }
 
-    public String getInfo() {
-        return "{\"username\": \"" + userName + "\", \"point\": " + point + ", \"ready\": " + ready + "}";
-    }
 }

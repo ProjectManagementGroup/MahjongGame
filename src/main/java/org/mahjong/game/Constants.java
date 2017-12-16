@@ -27,7 +27,9 @@ public class Constants {
      */
     public enum RequestType {
         bump("碰", 1),
-        eat("吃", 0);
+        kong("明杠", 1),
+        eat("吃", 0),
+        win("胡", 2);
 
         private String chineseName;
         private int rank;

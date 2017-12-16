@@ -48,6 +48,7 @@ public class SystemWebSocketHandler implements WebSocketHandler {
         session.sendMessage(new TextMessage("success connect"));
     }
 
+
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> webSocketMessage) throws Exception {
         String payload = webSocketMessage.getPayload().toString();
@@ -104,41 +105,55 @@ public class SystemWebSocketHandler implements WebSocketHandler {
             case "accept":
                 roomService.joinFriendRoom(payloadArray, session);
                 break;
-//            /**
-//             * 用户抓牌,服务器推，不需要用户请求，因为是服务器控制顺序
-//             * in|
-//             */
-//            case "in":
-//                gameService.allocateMahjongTile(session);
-//                break;
             /**
              * 用户出牌
              * out|tile
              * tile指麻将牌的名字
              */
-            case "tile":
+            case "out":
                 gameService.throwMahjongTile(payloadArray, session);
+                break;
+            /**
+             * 用户暗杠
+             * kong-dark
+             */
+            case "kong-dark":
+                gameService.kongDark(session);
+                break;
+            /**
+             * 用户明杠
+             * kong-bright|
+             */
+            case "kong-bright":
+                gameService.bumpOrEatOrKong(session,"kong");
+                break;
+            /**
+             * 用户退房
+             * exit|
+             */
+            case "exit":
+                roomService.exit(session);
                 break;
             /**
              * 用户胡牌
              * win|
              */
             case "win":
-                gameService.win(session);
+                gameService.win(session, "win");
                 break;
             /**
              * 碰
              * bump|
              */
             case "bump":
-                gameService.bumpOrEat(session, "bump");
+                gameService.bumpOrEatOrKong(session, "bump");
                 break;
             /**
              * 吃
              * eat|
              */
             case "eat":
-                gameService.bumpOrEat(session, "eat");
+                gameService.bumpOrEatOrKong(session, "eat");
                 break;
             default:
                 log.error("请求消息错误");

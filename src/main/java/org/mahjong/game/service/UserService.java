@@ -64,7 +64,7 @@ public class UserService {
      */
     public void resetUser(User user) {
         user.setReady(false);
-//        user.setRoom(null);//仍然停留在原房间
+//        user.setRoom(null);//仍然停留在原房间,index也不改变
         user.setThrownTiles(null);
         user.setOwnTiles(null);
         save(user);

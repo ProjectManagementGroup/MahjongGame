@@ -1,5 +1,6 @@
 package org.mahjong.game.domain;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.mahjong.game.Constants;
@@ -29,16 +30,21 @@ public class User {
     private Integer point;
 
     /**
+     * 用户排序
+     */
+    private int index;
+
+    /**
      * 玩家手牌，游戏开始前清空
      */
     @Transient
-    private List<Constants.MahjongTile> ownTiles;
+    private List<Constants.MahjongTile> ownTiles = Lists.newLinkedList();
 
     /**
      * 玩家出过的牌，游戏开始前清空
      */
     @Transient
-    private List<Constants.MahjongTile> thrownTiles;
+    private List<Constants.MahjongTile> thrownTiles = Lists.newLinkedList();
 
     /**
      * 用户所属房间，可以为空
@@ -115,6 +121,14 @@ public class User {
 
     public void setReady(boolean ready) {
         this.ready = ready;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     @Override

@@ -109,19 +109,36 @@ public class RoomService {
         result.setStatus(true);
         result.setMessage("room information");
 
-        //把所有玩家的username和point都广播
+        Map<String, Object> resultMap = Maps.newLinkedHashMap();
+
+        //把非自己的所有玩家的可见信息全部广播
         List<Object> list = Lists.newLinkedList();
         for (User u : user.getRoom().getPlayers()) {
+            if (u.getId() == user.getId()) {
+                continue;
+            }
             Map<String, Object> map = Maps.newLinkedHashMap();
             map.put("username", u.getUserName());
             map.put("point", u.getPoint());
             map.put("ready", u.isReady());
+            map.put("index", u.getIndex());
+            map.put("thrownTiles", u.getThrownTiles());
             list.add(map);
         }
-        Map<String, Object> map = Maps.newLinkedHashMap();
-        map.put("list", list);
+        resultMap.put("list", list);
+
+        //加入自己的所有信息
+        resultMap.put("username", user.getUserName());
+        resultMap.put("point", user.getPoint());
+        resultMap.put("ready", user.isReady());
+        resultMap.put("index", user.getIndex());
+        resultMap.put("ownTiles", user.getOwnTiles());
+        resultMap.put("thrownTiles", user.getThrownTiles());
+
+        //房间内剩余牌量
+        resultMap.put("restTiles", user.getRoom().getMahjongTiles().size());
 //        map.put("start", user.getRoom().isPlaying());
-        result.setObject(objectMapper.writeValueAsString(map));
+        result.setObject(objectMapper.writeValueAsString(resultMap));
 //        result.setObject(map.entrySet().stream().map(e -> e.getKey() + ":" + e.getValue()).collect(Collectors.joining(",", "{", "}")));
 //        result.setObject(objectMapper.writeValueAsString(map));
         session.sendMessage(new TextMessage(result.toString()));
@@ -162,6 +179,7 @@ public class RoomService {
             room = createRoom();
             room.getPlayers().add(user);
             user.setRoom(room);
+            user.setIndex(0);//自己就是第一个
             userService.save(user);
             roomMap.put(room.getId(), room);
             log.info("玩家{}创建随机房间{}", user.getUserName(), room.getId());
@@ -174,6 +192,7 @@ public class RoomService {
 
         room.getPlayers().add(user);
         user.setRoom(room);
+        user.setIndex(room.getPlayers().size());
         userService.save(user);
 
         result.setStatus(true);
@@ -233,6 +252,7 @@ public class RoomService {
         }
         room.getPlayers().add(user);
         user.setRoom(room);
+        user.setIndex(room.getPlayers().size());
         userService.save(user);
 
 //        result.setStatus(true);
@@ -329,6 +349,45 @@ public class RoomService {
         session.sendMessage(new TextMessage(result.toString()));
 
         roomMap.put(room.getId(), room);
+    }
+
+    public void exit(WebSocketSession session) throws Exception {
+        JsonResult result = new JsonResult();
+        User user = userService.getUserFromSession(session);
+        if (user == null) {
+            result.setMessage("用户信息错误");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        if (user.getRoom() == null) {
+            log.error("玩家{}不在房间中，无法退出房间", user.getUserName());
+            result.setMessage("玩家不在房间中，无法退出房间");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        if (user.getRoom().isPlaying()) {
+            log.error("玩家{}正在游戏不能退出", user.getUserName());
+            result.setMessage("玩家正在游戏不能退出");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        //一人退出房间解散
+        result.setStatus(true);
+        result.setMessage("exit room");
+        result.setObject("玩家" + user.getUserName() + "退出游戏房间解散");
+
+        //这个房间就不存在了
+        roomMap.remove(user.getRoom().getId());
+        for (User u : user.getRoom().getPlayers()) {
+            u.setIndex(-1);
+            u.setRoom(null);
+            u.setOwnTiles(Lists.newLinkedList());
+            u.setThrownTiles(Lists.newLinkedList());
+            u.setReady(false);
+            userService.save(u);
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUserName());
+            socketSession.sendMessage(new TextMessage(result.toString()));
+        }
     }
 
     public static void main(String args[]) throws Exception {

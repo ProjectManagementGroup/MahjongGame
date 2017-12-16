@@ -340,7 +340,6 @@ public class GameService {
         if (index == -2) {//说明有人胡了
             processWin(room);
         } else if (index == -1) {//如果没有要抢，那么按照正常顺序开会时发牌
-            //TODO:判断荒牌/平局
             boolean b = isTie(room);
             if (b) {
                 processTie(room);
@@ -354,7 +353,6 @@ public class GameService {
             User user = room.getPlayers().get(index);
             //给第index个玩家发牌
             WebSocketSession session = SystemWebSocketHandler.sessionsMap.get(user.getUserName());
-            //TODO:暂时不考虑玩家掉线情况
             allocateMahjongTile(session);
         } else {
             //有人要碰牌或者吃牌或者杠
@@ -416,7 +414,6 @@ public class GameService {
         String username = list.get(0).getUser().getUserName();
         int index = room.getPlayerIndex(username);
         WebSocketSession session = SystemWebSocketHandler.sessionsMap.get(username);
-        //TODO:暂时不考虑掉线情况
         processBumpOrEatOrKong(session, room, list.get(0).getType().name());
         return index;
     }

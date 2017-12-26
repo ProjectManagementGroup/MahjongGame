@@ -21,6 +21,7 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
     public boolean beforeHandshake(ServerHttpRequest request,
                                    ServerHttpResponse response, WebSocketHandler wsHandler,
                                    Map<String, Object> attributes) throws Exception {
+        log.debug("begin handshake");
         boolean result = super.beforeHandshake(request, response, wsHandler, attributes);
         log.debug("握手前..." + attributes.get("login"));
         return result;

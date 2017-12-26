@@ -93,7 +93,7 @@ public class UserService {
             return;
         }
         jsonResult.setStatus(true);
-        jsonResult.setMessage("登陆成功");
+        jsonResult.setMessage("login success");
         session.sendMessage(new TextMessage(jsonResult.toString()));
 
         session.getAttributes().put("username", username);
@@ -129,7 +129,7 @@ public class UserService {
         userRepository.save(user);
 
         jsonResult.setStatus(true);
-        jsonResult.setMessage("注册成功");
+        jsonResult.setMessage("register success");
         session.sendMessage(new TextMessage(jsonResult.toString()));
         log.info("用户{}注册成功, session {}", username, session.getId());
     }

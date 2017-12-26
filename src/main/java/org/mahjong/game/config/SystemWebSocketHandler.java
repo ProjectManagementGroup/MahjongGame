@@ -7,12 +7,13 @@ import org.mahjong.game.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.socket.*;
 
 import javax.inject.Inject;
 import java.util.*;
 
-
+@CrossOrigin
 @Component
 public class SystemWebSocketHandler implements WebSocketHandler {
     private final Logger log = LoggerFactory.getLogger(SystemWebSocketHandler.class);

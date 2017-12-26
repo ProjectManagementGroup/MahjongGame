@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.SimpleCommandLinePropertySource;
 import org.springframework.util.StringUtils;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -18,6 +19,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
 
+@EnableWebSocket
 @SpringBootApplication
 public class Application {
 

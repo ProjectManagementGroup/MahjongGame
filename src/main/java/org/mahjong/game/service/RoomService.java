@@ -92,7 +92,7 @@ public class RoomService {
             return;
         }
         if (user.getRoom() == null) {
-            log.error("玩家{}不在房间中", user.getUserName());
+            log.error("玩家{}不在房间中", user.getUsername());
             result.setMessage("玩家不在房间中");
             session.sendMessage(new TextMessage(result.toString()));
             return;
@@ -115,7 +115,7 @@ public class RoomService {
                 continue;
             }
             Map<String, Object> map = Maps.newLinkedHashMap();
-            map.put("username", u.getUserName());
+            map.put("username", u.getUsername());
             map.put("point", u.getPoint());
             map.put("ready", u.isReady());
             map.put("index", u.getIndex());
@@ -125,7 +125,7 @@ public class RoomService {
         resultMap.put("list", list);
 
         //加入自己的所有信息
-        resultMap.put("username", user.getUserName());
+        resultMap.put("username", user.getUsername());
         resultMap.put("point", user.getPoint());
         resultMap.put("ready", user.isReady());
         resultMap.put("index", user.getIndex());
@@ -179,7 +179,7 @@ public class RoomService {
             user.setIndex(0);//自己就是第一个
             userService.save(user);
             roomMap.put(room.getId(), room);
-            log.info("玩家{}创建随机房间{}", user.getUserName(), room.getId());
+            log.info("玩家{}创建随机房间{}", user.getUsername(), room.getId());
             result.setStatus(true);
             result.setMessage("join random success");
             result.setObject(room.getId() + "");
@@ -199,10 +199,10 @@ public class RoomService {
 
         //给房间里所有人发消息包括自己，更新画面
         for (User u : room.getPlayers()) {
-            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getUserName())) {//下线的人暂时不管
+            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getUsername())) {//下线的人暂时不管
                 continue;
             }
-            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUserName());
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUsername());
             broadcastRoomPlayers(socketSession);
         }
     }
@@ -225,7 +225,7 @@ public class RoomService {
             return;
         }
         if (user.getRoom() != null) {
-            log.error("玩家{}已经在房间中，无法接受邀请", user.getUserName());
+            log.error("玩家{}已经在房间中，无法接受邀请", user.getUsername());
             result.setMessage("玩家已经在房间中，无法接受邀请");
             session.sendMessage(new TextMessage(result.toString()));
             return;
@@ -259,10 +259,10 @@ public class RoomService {
 
         //给房间里所有人发消息，更新画面
         for (User u : room.getPlayers()) {
-            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getUserName())) {//下线的人暂时不管
+            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getUsername())) {//下线的人暂时不管
                 continue;
             }
-            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUserName());
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUsername());
             broadcastRoomPlayers(socketSession);
         }
     }
@@ -288,7 +288,7 @@ public class RoomService {
             return;
         }
         if (user.getRoom() != null) {
-            log.error("玩家{}已经在房间中，无法邀请队友", user.getUserName());
+            log.error("玩家{}已经在房间中，无法邀请队友", user.getUsername());
             result.setMessage("玩家已经在房间中，无法邀请队友");
             session.sendMessage(new TextMessage(result.toString()));
             return;
@@ -357,13 +357,13 @@ public class RoomService {
             return;
         }
         if (user.getRoom() == null) {
-            log.error("玩家{}不在房间中，无法退出房间", user.getUserName());
+            log.error("玩家{}不在房间中，无法退出房间", user.getUsername());
             result.setMessage("玩家不在房间中，无法退出房间");
             session.sendMessage(new TextMessage(result.toString()));
             return;
         }
         if (user.getRoom().isPlaying()) {
-            log.error("玩家{}正在游戏不能退出", user.getUserName());
+            log.error("玩家{}正在游戏不能退出", user.getUsername());
             result.setMessage("玩家正在游戏不能退出");
             session.sendMessage(new TextMessage(result.toString()));
             return;
@@ -371,7 +371,7 @@ public class RoomService {
         //一人退出房间解散
         result.setStatus(true);
         result.setMessage("exit room");
-        result.setObject("玩家" + user.getUserName() + "退出游戏房间解散");
+        result.setObject("玩家" + user.getUsername() + "退出游戏房间解散");
 
         //这个房间就不存在了
         roomMap.remove(user.getRoom().getId());
@@ -382,7 +382,7 @@ public class RoomService {
             u.setThrownTiles(Lists.newLinkedList());
             u.setReady(false);
             userService.save(u);
-            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUserName());
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUsername());
             socketSession.sendMessage(new TextMessage(result.toString()));
         }
     }

@@ -18,7 +18,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String userName;
+    private String username;
 
     private String password;
 
@@ -74,12 +74,12 @@ public class User {
         this.id = id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Integer getPoint() {
@@ -138,14 +138,14 @@ public class User {
         User user = (User) o;
 
         if (!id.equals(user.id)) return false;
-        if (!userName.equals(user.userName)) return false;
+        if (!username.equals(user.username)) return false;
         return password.equals(user.password);
     }
 
     @Override
     public int hashCode() {
         int result = id.hashCode();
-        result = 31 * result + userName.hashCode();
+        result = 31 * result + username.hashCode();
         result = 31 * result + password.hashCode();
         return result;
     }

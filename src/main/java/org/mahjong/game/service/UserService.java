@@ -114,7 +114,7 @@ public class UserService {
             return;
         }
         User user = new User();
-        user.setUserName(username);
+        user.setUsername(username);
         user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
         userRepository.save(user);
 
@@ -137,7 +137,7 @@ public class UserService {
             return;
         }
         if (user.getRoom() == null) {
-            log.error("玩家{}不在房间中，无法准备", user.getUserName());
+            log.error("玩家{}不在房间中，无法准备", user.getUsername());
             result.setMessage("玩家已经在房间中，无法接受邀请");
             session.sendMessage(new TextMessage(result.toString()));
             return;
@@ -154,10 +154,10 @@ public class UserService {
         //广播
         //给房间里所有人发消息，更新画面
         for (User u : room.getPlayers()) {
-            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getUserName())) {//下线的人暂时不管
+            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getUsername())) {//下线的人暂时不管
                 continue;
             }
-            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUserName());
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUsername());
             roomService.broadcastRoomPlayers(socketSession);
         }
     }

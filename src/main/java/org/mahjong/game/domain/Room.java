@@ -143,7 +143,7 @@ public class Room {
 
     public int getPlayerIndex(String username) {
         for (int i = 0; i < 4; i++) {
-            if (username.equals(players.get(i).getUserName())) {
+            if (username.equals(players.get(i).getUsername())) {
                 return i;
             }
         }

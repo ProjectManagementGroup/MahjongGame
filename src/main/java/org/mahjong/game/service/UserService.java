@@ -40,7 +40,7 @@ public class UserService {
             session.sendMessage(new TextMessage(result.toString()));
             return null;
         }
-        Optional<User> _user = userRepository.findOneByUserName(username);
+        Optional<User> _user = userRepository.findOneByUsername(username);
         if (!_user.isPresent()) {
             result.setMessage("用户不存在");
             session.sendMessage(new TextMessage(result.toString()));
@@ -51,7 +51,7 @@ public class UserService {
     }
 
     public User getUserFromUsername(String username) {
-        Optional<User> _user = userRepository.findOneByUserName(username);
+        Optional<User> _user = userRepository.findOneByUsername(username);
         if (!_user.isPresent()) {
             return null;
         }
@@ -80,7 +80,7 @@ public class UserService {
         }
         String username = payloadArray[1];
         String password = payloadArray[2];
-        Optional<User> _user = userRepository.findOneByUserName(username.trim());
+        Optional<User> _user = userRepository.findOneByUsername(username.trim());
         if (!_user.isPresent() || !_user.get().getPassword().equals(DigestUtils.md5DigestAsHex(password.getBytes()))) {
             jsonResult.setMessage("用户名或密码错误");
             session.sendMessage(new TextMessage(jsonResult.toString()));
@@ -107,7 +107,7 @@ public class UserService {
         }
         String username = payloadArray[1];
         String password = payloadArray[2];
-        Optional<User> _user = userRepository.findOneByUserName(username.trim());
+        Optional<User> _user = userRepository.findOneByUsername(username.trim());
         if (_user.isPresent()) {
             jsonResult.setMessage("用户名重复");
             session.sendMessage(new TextMessage(jsonResult.toString()));

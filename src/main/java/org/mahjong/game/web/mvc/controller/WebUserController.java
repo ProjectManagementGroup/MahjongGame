@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.mahjong.game.domain.FriendRelation;
 import org.mahjong.game.domain.User;
 
 import javax.inject.Inject;

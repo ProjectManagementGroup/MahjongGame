@@ -1,8 +1,6 @@
 package org.mahjong.game.domain;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.mahjong.game.Constants;
 
 import javax.persistence.*;
@@ -32,6 +30,7 @@ public class User {
     /**
      * 用户排序
      */
+    @Transient
     private int index;
 
     /**

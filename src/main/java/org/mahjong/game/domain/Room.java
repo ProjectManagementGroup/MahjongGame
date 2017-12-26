@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import org.joda.time.DateTime;
 import org.mahjong.game.Constants;
 
+import javax.persistence.Transient;
 import java.util.List;
 import java.util.Set;
 

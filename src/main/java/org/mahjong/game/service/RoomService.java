@@ -119,25 +119,24 @@ public class RoomService {
             map.put("point", u.getPoint());
             map.put("ready", u.isReady());
             map.put("index", u.getIndex());
-            map.put("thrownTiles", u.getThrownTiles());
+            map.put("thrownTiles", u.getJsonThrownTileLists());
             list.add(map);
         }
-        resultMap.put("list", list);
+        resultMap.put("others", list);
 
         //加入自己的所有信息
-        resultMap.put("username", user.getUsername());
-        resultMap.put("point", user.getPoint());
-        resultMap.put("ready", user.isReady());
-        resultMap.put("index", user.getIndex());
-        resultMap.put("ownTiles", user.getOwnTiles());
-        resultMap.put("thrownTiles", user.getThrownTiles());
+        Map<String, Object> meMap = Maps.newLinkedHashMap();
+        meMap.put("username", user.getUsername());
+        meMap.put("point", user.getPoint());
+        meMap.put("ready", user.isReady());
+        meMap.put("index", user.getIndex());
+        meMap.put("ownTiles", user.getJsonOwnTileLists());
+        meMap.put("thrownTiles", user.getJsonThrownTileLists());
 
+        resultMap.put("me", meMap);
         //房间内剩余牌量
         resultMap.put("restTiles", user.getRoom().getMahjongTiles().size());
-//        map.put("start", user.getRoom().isPlaying());
         result.setObject(objectMapper.writeValueAsString(resultMap));
-//        result.setObject(map.entrySet().stream().map(e -> e.getKey() + ":" + e.getValue()).collect(Collectors.joining(",", "{", "}")));
-//        result.setObject(objectMapper.writeValueAsString(map));
         session.sendMessage(new TextMessage(result.toString()));
 
     }
@@ -324,11 +323,19 @@ public class RoomService {
         room.setFriendly(true);
         room.getPlayers().addAll(friends);
 
+        //给被邀请的人发消息
+        //要把邀请人的信息和其他被邀请的人的消息都发送出去
         result.setStatus(true);
         result.setMessage("invitation");
-        result.setObject(room.getId() + "");
 
-        //给被邀请的人发消息
+        Map<String, Object> map = Maps.newLinkedHashMap();
+        map.put("banker", user.getUsername());
+        for (int i = 0; i < friends.size(); i++) {
+            map.put("username" + i, friends.get(i).getUsername());
+        }
+        map.put("room", room.getId());
+        result.setObject(objectMapper.writeValueAsString(map));
+
         for (WebSocketSession s : sessions) {
             if (!s.isOpen()) {//仍要判断是否对方还在线
                 log.error("好友{}不在线，无法邀请队友", s.getAttributes().get("username"));
@@ -387,30 +394,183 @@ public class RoomService {
         }
     }
 
+    public void adjustUserIndex(Room room, User winner) {
+        room.getPlayers().remove(winner);
+        room.getPlayers().add(0, winner);
+        for (int i = 0; i < room.getPlayers().size(); i++) {
+            room.getPlayers().get(i).setIndex(i);
+            userService.save(room.getPlayers().get(i));
+        }
+    }
+
     public static void main(String args[]) throws Exception {
+//        List<Object> list = Lists.newLinkedList();
+
+//        Map<String, Object> infoMap = Maps.newLinkedHashMap();
+//        infoMap.put("username", "123");
+//        infoMap.put("point", 123);
+//        infoMap.put("ready", true);
+//        list.add(infoMap);
+//
+//        infoMap = Maps.newLinkedHashMap();
+//        infoMap.put("username", "456");
+//        infoMap.put("point", 455);
+//        infoMap.put("ready", false);
+//        list.add(infoMap);
+//
+//        Map<String, Object> map = Maps.newLinkedHashMap();
+//        map.put("list", list);
+//        map.put("start", true);
+//
+//        JsonResult result = new JsonResult();
+//        result.setObject(objectMapper.writeValueAsString(infoMap));
+//        result.setStatus(true);
+//        result.setMessage("other out");
+//        System.out.println(result.toString());
+
+//        JsonResult result = new JsonResult();
+//        result.setStatus(true);
+//        result.setMessage("room information");
+//
+//        Map<String, Object> resultMap = Maps.newLinkedHashMap();
+//
+//        //把非自己的所有玩家的可见信息全部广播
+//        List<Object> list = Lists.newLinkedList();
+//
+//        Map<String, Object> map = Maps.newLinkedHashMap();
+//        map.put("username", "000");
+//        map.put("point", 000);
+//        map.put("ready", false);
+//        map.put("index", 0);
+//        List<Object> list1 = Lists.newLinkedList();
+//        list1.add(Constants.MahjongTile.eastWind.getStruct());
+//        list1.add(Constants.MahjongTile.fiveBamboo.getStruct());
+//        list1.add(Constants.MahjongTile.white.getStruct());
+//        map.put("thrownTiles", list1);
+//        list.add(map);
+//
+//        map = Maps.newLinkedHashMap();
+//        map.put("username", "111");
+//        map.put("point", 111);
+//        map.put("ready", false);
+//        map.put("index", 1);
+//        list1 = Lists.newLinkedList();
+//        list1.add(Constants.MahjongTile.twoBamboo.getStruct());
+//        list1.add(Constants.MahjongTile.twoDot.getStruct());
+//        list1.add(Constants.MahjongTile.middle.getStruct());
+//        map.put("thrownTiles", list1);
+//        list.add(map);
+//
+//        map = Maps.newLinkedHashMap();
+//        map.put("username", "222");
+//        map.put("point", 222);
+//        map.put("ready", false);
+//        map.put("index", 2);
+//        list1 = Lists.newLinkedList();
+//        list.add(Constants.MahjongTile.fortune.getStruct());
+//        list.add(Constants.MahjongTile.fiveMyriad.getStruct());
+//        list.add(Constants.MahjongTile.westWind.getStruct());
+//        map.put("thrownTiles", list1);
+//        list.add(map);
+//
+//        resultMap.put("others", list);
+//
+//        //加入自己的所有信息
+//        Map<String, Object> me = Maps.newLinkedHashMap();
+//        me.put("username", "333");
+//        me.put("point", 333);
+//        me.put("ready", true);
+//        me.put("index", 3);
+//        list1 = Lists.newLinkedList();
+//        list1.add(Constants.MahjongTile.eightDot.getStruct());
+//        list1.add(Constants.MahjongTile.fourBamboo.getStruct());
+//        list1.add(Constants.MahjongTile.sixBamboo.getStruct());
+//        me.put("ownTiles", list1);
+//        me.put("thrownTiles", list1);
+//
+//        resultMap.put("me", me);
+//
+//        //房间内剩余牌量
+//        resultMap.put("restTiles", 52);
+//        result.setObject(objectMapper.writeValueAsString(resultMap));
+//        System.out.println(result.toString());
+
+//        JsonResult result = new JsonResult();
+//        result.setStatus(true);
+//        result.setMessage("game start allocate");
+//
+//        //给第一个玩家发14张牌，其他玩家13张牌
+//        Map<String, Object> map = Maps.newLinkedHashMap();
+//        map.put("own-index", 0);
+//
+//        List<Object> list1 = Lists.newLinkedList();
+//        list1.add(Constants.MahjongTile.eastWind.getStruct());
+//        list1.add(Constants.MahjongTile.fiveBamboo.getStruct());
+//        list1.add(Constants.MahjongTile.white.getStruct());
+//        map.put("own-tiles", list1);
+//
+//        result.setObject(objectMapper.writeValueAsString(map));
+//        System.out.println(result.toString());
+
+//        result.setStatus(true);
+//        //向其他玩家广播
+//        result.setMessage("bump success");
+//        Map<String, Object> map = Maps.newLinkedHashMap();
+//        map.put("username", "zyw");
+//        map.put("index", 2);
+//        map.put("type", "bump");
+//        map.put("tile", Constants.MahjongTile.sixBamboo.getStruct());
+//        result.setObject(objectMapper.writeValueAsString(map));
+//        System.out.println(result);
+
+        //广播胜利消息
+        JsonResult result = new JsonResult();
+        result.setStatus(true);
+        result.setMessage("game tie");
+
+        Map<String, Object> resultMap = Maps.newLinkedHashMap();
+
+        //加入胜利玩家信息
         List<Object> list = Lists.newLinkedList();
 
-        Map<String, Object> infoMap = Maps.newLinkedHashMap();
-        infoMap.put("username", "123");
-        infoMap.put("point", 123);
-        infoMap.put("ready", true);
-        list.add(infoMap);
-
-        infoMap = Maps.newLinkedHashMap();
-        infoMap.put("username", "456");
-        infoMap.put("point", 455);
-        infoMap.put("ready", false);
-        list.add(infoMap);
-
         Map<String, Object> map = Maps.newLinkedHashMap();
-        map.put("list", list);
-        map.put("start", true);
+        map.put("username", "111");
+        List<Object> list1 = Lists.newLinkedList();
+        list1.add(Constants.MahjongTile.eastWind.getStruct());
+        list1.add(Constants.MahjongTile.fiveBamboo.getStruct());
+        list1.add(Constants.MahjongTile.white.getStruct());
+        map.put("ownTiles", list1);
+        map.put("thrownTiles", list1);
+        map.put("index", 1);
+        list.add(map);
 
-        JsonResult result = new JsonResult();
-        result.setObject(objectMapper.writeValueAsString(infoMap));
-        result.setStatus(true);
-        result.setMessage("other out");
-        System.out.println(result.toString());
+        map = Maps.newLinkedHashMap();
+        map.put("username", "222");
+        list1 = Lists.newLinkedList();
+        list1.add(Constants.MahjongTile.eastWind.getStruct());
+        list1.add(Constants.MahjongTile.fiveBamboo.getStruct());
+        list1.add(Constants.MahjongTile.white.getStruct());
+        map.put("ownTiles", list1);
+        map.put("thrownTiles", list1);
+        map.put("index", 2);
+        list.add(map);
+
+        map = Maps.newLinkedHashMap();
+        map.put("username", "333");
+        list1 = Lists.newLinkedList();
+        list1.add(Constants.MahjongTile.eastWind.getStruct());
+        list1.add(Constants.MahjongTile.fiveBamboo.getStruct());
+        list1.add(Constants.MahjongTile.white.getStruct());
+        map.put("ownTiles", list1);
+        map.put("thrownTiles", list1);
+        map.put("index", 3);
+        list.add(map);
+
+        //加入所有玩家所有信息
+        resultMap.put("all", list);
+        result.setObject(objectMapper.writeValueAsString(resultMap));
+        System.out.println(result);
     }
+
 
 }

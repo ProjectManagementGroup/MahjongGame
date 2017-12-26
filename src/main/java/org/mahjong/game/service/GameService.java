@@ -139,9 +139,10 @@ public class GameService {
         session.sendMessage(new TextMessage(result.toString()));
 
         result.setMessage("other out");
-        Map<String, String> map = Maps.newLinkedHashMap();
+        Map<String, Object> map = Maps.newLinkedHashMap();
         map.put("username", user.getUsername());
-        map.put("tile", mahjongTile.name());
+        map.put("index", user.getIndex());
+        map.put("tile", mahjongTile.getStruct());
         result.setObject(objectMapper.writeValueAsString(map));
 
         for (User u : user.getRoom().getPlayers()) {
@@ -211,13 +212,14 @@ public class GameService {
             Map<String, Object> map = Maps.newLinkedHashMap();
             map.put("username", u.getUsername());
             map.put("ownTiles", u.getOwnTiles());
-            map.put("thrownTiles", u.getThrownTiles());
+            map.put("thrownTiles", u.getJsonThrownTileLists());
+            map.put("ownTiles", u.getJsonOwnTileLists());
             map.put("index", u.getIndex());
             list.add(map);
         }
 
         //加入所有玩家所有信息
-        resultMap.put("list", list);
+        resultMap.put("all", list);
         result.setObject(objectMapper.writeValueAsString(resultMap));
 
         for (User u : room.getPlayers()) {
@@ -230,11 +232,13 @@ public class GameService {
 
         //恢复房间和玩家的状态
         roomService.resetRoom(user.getRoom());
+        //赢家index=0
+        roomService.adjustUserIndex(room, user);
         user.getRoom().getPlayers().stream().forEach(p -> userService.resetUser(p));
     }
 
     /**
-     * 胡牌
+     * 荒牌
      */
     public void processTie(Room room) throws Exception {
         //广播s平局消息
@@ -249,13 +253,14 @@ public class GameService {
             Map<String, Object> map = Maps.newLinkedHashMap();
             map.put("username", u.getUsername());
             map.put("ownTiles", u.getOwnTiles());
-            map.put("thrownTiles", u.getThrownTiles());
+            map.put("thrownTiles", u.getJsonThrownTileLists());
+            map.put("ownTiles", u.getJsonOwnTileLists());
             map.put("index", u.getIndex());
             list.add(map);
         }
 
         //加入所有玩家所有信息
-        resultMap.put("list", list);
+        resultMap.put("all", list);
         result.setObject(objectMapper.writeValueAsString(resultMap));
 
         for (User u : room.getPlayers()) {
@@ -317,7 +322,7 @@ public class GameService {
             WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(user.getUsername());
             Map<String, Object> map = Maps.newLinkedHashMap();
             map.put("own-index", user.getIndex());
-            map.put("own-tiles", user.getOwnTiles());
+            map.put("own-tiles", user.getJsonOwnTileLists());
             socketSession.sendMessage(new TextMessage(result.toString()));
         }
 
@@ -474,7 +479,7 @@ public class GameService {
         map.put("username", user.getUsername());
         map.put("index", user.getIndex());
         map.put("type", type);
-        map.put("tile", room.getLastTile());
+        map.put("tile", room.getLastTile().getStruct());
         result.setObject(objectMapper.writeValueAsString(map));
 
         broadcastSpecificMessage(user.getRoom(), result.toString(), user.getId());

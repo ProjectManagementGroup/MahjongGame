@@ -1,6 +1,7 @@
 package org.mahjong.game.domain;
 
 import com.google.common.collect.Lists;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.mahjong.game.Constants;
 
 import javax.persistence.*;
@@ -25,7 +26,7 @@ public class User {
     /**
      * 积分
      */
-    private Integer point;
+    private Integer point = 0;
 
     /**
      * 用户排序
@@ -148,6 +149,22 @@ public class User {
         result = 31 * result + username.hashCode();
         result = 31 * result + password.hashCode();
         return result;
+    }
+
+    public List<Object> getJsonOwnTileLists() throws Exception {
+        List<Object> list = Lists.newLinkedList();
+        for (Constants.MahjongTile mt : ownTiles) {
+            list.add(mt.getStruct());
+        }
+        return list;
+    }
+
+    public List<Object> getJsonThrownTileLists() throws Exception {
+        List<Object> list = Lists.newLinkedList();
+        for (Constants.MahjongTile mt : thrownTiles) {
+            list.add(mt.getStruct());
+        }
+        return list;
     }
 
 }

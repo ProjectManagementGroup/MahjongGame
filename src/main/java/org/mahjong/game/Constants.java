@@ -1,9 +1,12 @@
 package org.mahjong.game;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import java.util.List;
+import java.util.Map;
 
 public class Constants {
 
@@ -21,6 +24,9 @@ public class Constants {
     }
 
     public static final int PERIOD = 5;//秒，为定时器时长
+
+    private static ObjectMapper objectMapper = new ObjectMapper();//用于网络发包
+
 
     /**
      * 碰/吃
@@ -134,6 +140,13 @@ public class Constants {
             this.chineseName = chineseName;
             this.type = type;
             this.number = number;
+        }
+
+        public Map<String, Object> getStruct() throws Exception {
+            Map<String, Object> map = Maps.newHashMap();
+            map.put("type", type);
+            map.put("number", number);
+            return map;
         }
 
         public String getChineseName() {

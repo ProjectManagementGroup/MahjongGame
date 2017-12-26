@@ -63,7 +63,13 @@ public class ScheduledTaskService {
         for (Room room : RoomService.roomMap.values()) {
             //如果计时器为空，说明已经发完了牌，现在正在等到用户出牌请求
             //如果计时器不为空，说明已经出牌完，不管怎样都等待5秒后才进行下一轮的发牌处理
-            if (room.getTimerStart() != null && room.getTimerStart().plusSeconds(Constants.PERIOD).isAfter(DateTime.now())) {
+            if (!room.isPlaying()) {
+                continue;
+            }
+            if (room.getTimerStart() == null) {
+                continue;
+            }
+            if (room.getTimerStart().plusSeconds(Constants.PERIOD).isAfter(DateTime.now())) {
                 continue;
             }
             gameService.nextRound(room);//排序后给玩家发牌

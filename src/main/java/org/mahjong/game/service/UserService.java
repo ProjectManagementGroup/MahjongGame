@@ -1,5 +1,7 @@
 package org.mahjong.game.service;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.mahjong.game.config.SystemWebSocketHandler;
 import org.mahjong.game.domain.Room;
 import org.mahjong.game.domain.User;
@@ -14,6 +16,8 @@ import org.springframework.web.socket.WebSocketSession;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -21,6 +25,8 @@ import java.util.Optional;
 public class UserService {
 
     private static Logger log = LoggerFactory.getLogger(UserService.class);
+
+    private Map<String, User> allUsers = Maps.newLinkedHashMap();
 
     @Inject
     private UserRepository userRepository;
@@ -30,6 +36,7 @@ public class UserService {
 
     public void save(User user) {
         userRepository.save(user);
+        allUsers.put(user.getUsername(), user);
     }
 
     public User getUserFromSession(WebSocketSession session) throws Exception {
@@ -40,22 +47,20 @@ public class UserService {
             session.sendMessage(new TextMessage(result.toString()));
             return null;
         }
-        Optional<User> _user = userRepository.findOneByUsername(username);
-        if (!_user.isPresent()) {
+        if (!allUsers.containsKey(username)) {
             result.setMessage("用户不存在");
             session.sendMessage(new TextMessage(result.toString()));
             return null;
         }
-        User user = _user.get();
+        User user = allUsers.get(username);
         return user;
     }
 
     public User getUserFromUsername(String username) {
-        Optional<User> _user = userRepository.findOneByUsername(username);
-        if (!_user.isPresent()) {
+        if (!allUsers.containsKey(username)) {
             return null;
         }
-        User user = _user.get();
+        User user = allUsers.get(username);
         return user;
     }
 
@@ -67,6 +72,7 @@ public class UserService {
 //        user.setRoom(null);//仍然停留在原房间,index也不改变
         user.setThrownTiles(null);
         user.setOwnTiles(null);
+        user.setIndex(0);
         save(user);
     }
 
@@ -94,6 +100,10 @@ public class UserService {
         SystemWebSocketHandler.sessions.add(session);
         SystemWebSocketHandler.sessionsMap.put(username, session);//key是userName
         log.info("用户{}登陆成功, 分配了session {}", username, session.getId());
+
+        //加入list
+        User user = _user.get();
+        allUsers.put(user.getUsername(), user);
 
     }
 
@@ -138,7 +148,7 @@ public class UserService {
         }
         if (user.getRoom() == null) {
             log.error("玩家{}不在房间中，无法准备", user.getUsername());
-            result.setMessage("玩家已经在房间中，无法接受邀请");
+            result.setMessage("玩家不在房间中，无法接受邀请");
             session.sendMessage(new TextMessage(result.toString()));
             return;
         }

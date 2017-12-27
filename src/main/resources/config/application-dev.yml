@@ -50,7 +50,7 @@ spring:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:mysql://localhost:3306/mahjong_game?useUnicode=true&characterEncoding=utf8&useSSL=false
         name: root
-        password:
+        password: root
         hikari:
             data-source-properties:
                 cachePrepStmts: true

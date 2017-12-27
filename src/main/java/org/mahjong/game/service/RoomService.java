@@ -4,6 +4,7 @@ package org.mahjong.game.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.joda.time.DateTime;
 import org.mahjong.game.Constants;
 import org.mahjong.game.config.SystemWebSocketHandler;
@@ -23,6 +24,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -701,21 +703,37 @@ public class RoomService {
 //        result.setObject(objectMapper.writeValueAsString(resultMap));
 //        session.sendMessage(new TextMessage(result.toString()));
 
+//        JsonResult result = new JsonResult();
+//        result.setStatus(true);
+//        result.setMessage("game start allocate");
+//
+//        //给第一个玩家发14张牌，其他玩家13张牌
+//        List<Object> list1 = Lists.newLinkedList();
+//        list1.add(Constants.MahjongTile.eastWind.getStruct());
+//        list1.add(Constants.MahjongTile.fiveBamboo.getStruct());
+//        list1.add(Constants.MahjongTile.white.getStruct());
+//        Map<String, Object> map = Maps.newLinkedHashMap();
+//        map.put("ownIndex", 0);
+//        map.put("ownTiles", list1);
+//
+//        result.setObject(objectMapper.writeValueAsString(map));
+//        session.sendMessage(new TextMessage(result.toString()));
+
+
         JsonResult result = new JsonResult();
+
+
         result.setStatus(true);
-        result.setMessage("game start allocate");
-
-        //给第一个玩家发14张牌，其他玩家13张牌
-        List<Object> list1 = Lists.newLinkedList();
-        list1.add(Constants.MahjongTile.eastWind.getStruct());
-        list1.add(Constants.MahjongTile.fiveBamboo.getStruct());
-        list1.add(Constants.MahjongTile.white.getStruct());
-        Map<String, Object> map = Maps.newLinkedHashMap();
-        map.put("ownIndex", 0);
-        map.put("ownTiles", list1);
-
-        result.setObject(objectMapper.writeValueAsString(map));
+        result.setMessage("out success");
         session.sendMessage(new TextMessage(result.toString()));
+
+//        result.setMessage("other out");
+//        Map<String, Object> map = Maps.newLinkedHashMap();
+//        map.put("name", "zyw");
+//        map.put("index", 0);
+//        map.put("tile", Constants.MahjongTile.sixBamboo.getStruct());
+//        result.setObject(objectMapper.writeValueAsString(map));
+//        session.sendMessage(new TextMessage(result.toString()));
     }
 
 }

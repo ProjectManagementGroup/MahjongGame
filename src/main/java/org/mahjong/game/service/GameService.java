@@ -176,7 +176,7 @@ public class GameService {
         }
         //可能是自摸胡牌,那么这个时候没有计时器
         if (user.getRoom().getTimerStart() == null) {
-            processWin(user.getRoom());
+            processWin(user.getRoom(), user);
             return;
         }
         //点炮胡牌
@@ -194,10 +194,7 @@ public class GameService {
     /**
      * 胡牌
      */
-    public void processWin(Room room) throws Exception {
-        String name = room.getRequests().get(0).getUser().getName();
-        User user = userService.getUserFromUsername(name);
-        //TODO:计算分数，更新玩家point值
+    public void processWin(Room room, User winner) throws Exception {
 
         //广播胜利消息
         JsonResult result = new JsonResult();
@@ -207,13 +204,18 @@ public class GameService {
         Map<String, Object> resultMap = Maps.newLinkedHashMap();
 
         //加入胜利玩家信息
-        resultMap.put("winnerName", name);
-        resultMap.put("winnerIndex", user.getGameid());
+        resultMap.put("winnerName", winner.getName());
+        resultMap.put("winnerIndex", winner.getGameid());
 
         List<Object> list = Lists.newLinkedList();
         for (User u : room.getPlayers()) {
             Map<String, Object> map = Maps.newLinkedHashMap();
             map.put("name", u.getName());
+            if (u.getId() == winner.getId()) {
+                u.setPoint(u.getPoint() + 100);
+            } else {
+                u.setPoint(u.getPoint() - 50);
+            }
             map.put("point", u.getPoint());
             map.put("thrownTiles", u.getJsonThrownTileLists());
             map.put("ownTiles", u.getJsonOwnTileLists());
@@ -234,10 +236,10 @@ public class GameService {
         }
 
         //恢复房间和玩家的状态
-        roomService.resetRoom(user.getRoom());
+        roomService.resetRoom(room);
         //赢家index=0
-        roomService.adjustUserIndex(room, user);
-        user.getRoom().getPlayers().stream().forEach(p -> userService.resetUser(p));
+        roomService.adjustUserIndex(room, winner);
+        room.getPlayers().stream().forEach(p -> userService.resetUser(p));
     }
 
     /**
@@ -347,7 +349,9 @@ public class GameService {
         //先判断是不是有人胡牌了
         int index = processBeforeNewRound(room);//通知某个玩家碰牌或者吃牌成功
         if (index == -2) {//说明有人胡了
-            processWin(room);
+            List<TileRequest> list = room.getRequests();
+            User user = list.get(0).getUser();
+            processWin(room, user);
         } else if (index == -1) {//如果没有要抢，那么按照正常顺序开会时发牌
             boolean b = isTie(room);
             if (b) {

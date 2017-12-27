@@ -643,20 +643,62 @@ public class RoomService {
 //        log.info("用户{}登陆成功, 分配了session {}", username, session.getId());
 
 
-        JsonResult result = new JsonResult();
+//        JsonResult result = new JsonResult();
+//        //给被邀请的人发消息
+//        //要把邀请人的信息和其他被邀请的人的消息都发送出去
+//        result.setStatus(true);
+//        result.setMessage("invitation");
+//
+//        Map<String, Object> map = Maps.newLinkedHashMap();
+//        map.put("banker", "zyw");
+//        map.put("name0", "friend0");
+//        map.put("name1", "friend1");
+//        map.put("name2", "friend2");
+//        map.put("room", "20171227101010");
+//        result.setObject(objectMapper.writeValueAsString(map));
+//        session.sendMessage(new TextMessage(result.toString()));
 
-        //给被邀请的人发消息
-        //要把邀请人的信息和其他被邀请的人的消息都发送出去
+
+        JsonResult result = new JsonResult();
         result.setStatus(true);
-        result.setMessage("invitation");
+        result.setMessage("room information");
+
+        Map<String, Object> resultMap = Maps.newLinkedHashMap();
+
+        //把非自己的所有玩家的可见信息全部广播
+        List<Object> list = Lists.newLinkedList();
 
         Map<String, Object> map = Maps.newLinkedHashMap();
-        map.put("banker", "zyw");
-        map.put("name0", "friend0");
-        map.put("name1", "friend1");
-        map.put("name2", "friend2");
-        map.put("room", "20171227101010");
-        result.setObject(objectMapper.writeValueAsString(map));
+        map.put("name", "friend0");
+        map.put("point", 0);
+        map.put("ready", true);
+        map.put("index", 0);
+        list.add(map);
+
+        map = Maps.newLinkedHashMap();
+        map.put("name", "friend1");
+        map.put("point", 1);
+        map.put("ready", true);
+        map.put("index", 1);
+        list.add(map);
+
+        map = Maps.newLinkedHashMap();
+        map.put("name", "friend2");
+        map.put("point", 2);
+        map.put("ready", false);
+        map.put("index", 2);
+        list.add(map);
+
+        resultMap.put("others", list);
+
+        //加入自己的所有信息
+        Map<String, Object> meMap = Maps.newLinkedHashMap();
+        meMap.put("name", "zyw");
+        meMap.put("point", 300);
+        meMap.put("ready", false);
+        meMap.put("index", 3);
+        resultMap.put("me", meMap);
+        result.setObject(objectMapper.writeValueAsString(resultMap));
         session.sendMessage(new TextMessage(result.toString()));
 
 

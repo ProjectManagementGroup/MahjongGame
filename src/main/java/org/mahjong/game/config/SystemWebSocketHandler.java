@@ -64,6 +64,9 @@ public class SystemWebSocketHandler implements WebSocketHandler {
              * login|username|password
              * 登录成功后session里面存着username
              */
+            case "test":
+                roomService.test(payloadArray, session);
+                break;
             case "login":
                 userService.login(payloadArray, session);
                 break;
@@ -126,7 +129,7 @@ public class SystemWebSocketHandler implements WebSocketHandler {
              * kong-bright|
              */
             case "kong-bright":
-                gameService.bumpOrEatOrKong(session,"kong");
+                gameService.bumpOrEatOrKong(session, "kong");
                 break;
             /**
              * 用户退房

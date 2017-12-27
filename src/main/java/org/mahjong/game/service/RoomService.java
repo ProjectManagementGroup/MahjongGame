@@ -10,9 +10,11 @@ import org.mahjong.game.config.SystemWebSocketHandler;
 import org.mahjong.game.domain.Room;
 import org.mahjong.game.domain.User;
 import org.mahjong.game.dtos.JsonResult;
+import org.mahjong.game.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -20,6 +22,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -38,6 +41,9 @@ public class RoomService {
 
     @Inject
     private UserService userService;
+
+    @Inject
+    private UserRepository userRepository;
 
 
     /**
@@ -592,6 +598,26 @@ public class RoomService {
         result.setMessage("get tile");
         result.setObject(objectMapper.writeValueAsString(Constants.MahjongTile.sixBamboo.getStruct()));
         System.out.println(result);
+    }
+
+    public void test(String[] payloadArray, WebSocketSession session) throws Exception {
+        JsonResult jsonResult = new JsonResult();
+        String username = payloadArray[1];
+        String password = payloadArray[2];
+        Optional<User> _user = userRepository.findOneByUsername(username.trim());
+        if (_user.isPresent()) {
+            jsonResult.setMessage("register");
+            session.sendMessage(new TextMessage(jsonResult.toString()));
+            return;
+        }
+        User user = new User();
+        user.setName(username);
+        user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
+
+        jsonResult.setStatus(true);
+        jsonResult.setMessage("register");
+        session.sendMessage(new TextMessage(jsonResult.toString()));
+        log.info("用户{}注册成功, session {}", username, session.getId());
     }
 
 

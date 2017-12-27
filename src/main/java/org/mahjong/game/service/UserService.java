@@ -1,6 +1,6 @@
 package org.mahjong.game.service;
 
-import com.google.common.collect.Lists;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import org.mahjong.game.config.SystemWebSocketHandler;
 import org.mahjong.game.domain.Room;
@@ -16,7 +16,6 @@ import org.springframework.web.socket.WebSocketSession;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,9 +33,12 @@ public class UserService {
     @Inject
     private RoomService roomService;
 
+    private static ObjectMapper objectMapper = new ObjectMapper();//用于网络发包
+
+
     public void save(User user) {
         userRepository.save(user);
-        allUsers.put(user.getUsername(), user);
+        allUsers.put(user.getName(), user);
     }
 
     public User getUserFromSession(WebSocketSession session) throws Exception {
@@ -72,15 +74,14 @@ public class UserService {
 //        user.setRoom(null);//仍然停留在原房间,index也不改变
         user.setThrownTiles(null);
         user.setOwnTiles(null);
-        user.setIndex(0);
+        user.setGameid(0);
         save(user);
     }
 
-    @Transactional
     public void login(String[] payloadArray, WebSocketSession session) throws Exception {
         JsonResult jsonResult = new JsonResult();
         if (payloadArray.length != 3) {
-            jsonResult.setMessage("登录消息格式错误");
+            jsonResult.setMessage("login");
             session.sendMessage(new TextMessage(jsonResult.toString()));
             return;
         }
@@ -88,12 +89,20 @@ public class UserService {
         String password = payloadArray[2];
         Optional<User> _user = userRepository.findOneByUsername(username.trim());
         if (!_user.isPresent() || !_user.get().getPassword().equals(DigestUtils.md5DigestAsHex(password.getBytes()))) {
-            jsonResult.setMessage("用户名或密码错误");
+            jsonResult.setMessage("login");
             session.sendMessage(new TextMessage(jsonResult.toString()));
             return;
         }
         jsonResult.setStatus(true);
-        jsonResult.setMessage("login success");
+        jsonResult.setMessage("login");
+
+        User user = _user.get();
+        allUsers.put(user.getName(), user);
+
+        Map<String, Object> map = Maps.newLinkedHashMap();
+        map.put("name", username);
+        map.put("point", user.getPoint());
+        jsonResult.setObject(objectMapper.writeValueAsString(map));
         session.sendMessage(new TextMessage(jsonResult.toString()));
 
         session.getAttributes().put("username", username);
@@ -101,9 +110,6 @@ public class UserService {
         SystemWebSocketHandler.sessionsMap.put(username, session);//key是userName
         log.info("用户{}登陆成功, 分配了session {}", username, session.getId());
 
-        //加入list
-        User user = _user.get();
-        allUsers.put(user.getUsername(), user);
 
     }
 
@@ -111,7 +117,7 @@ public class UserService {
     public void register(String[] payloadArray, WebSocketSession session) throws Exception {
         JsonResult jsonResult = new JsonResult();
         if (payloadArray.length != 3) {
-            jsonResult.setMessage("注册消息格式错误");
+            jsonResult.setMessage("register");
             session.sendMessage(new TextMessage(jsonResult.toString()));
             return;
         }
@@ -119,17 +125,17 @@ public class UserService {
         String password = payloadArray[2];
         Optional<User> _user = userRepository.findOneByUsername(username.trim());
         if (_user.isPresent()) {
-            jsonResult.setMessage("用户名重复");
+            jsonResult.setMessage("register");
             session.sendMessage(new TextMessage(jsonResult.toString()));
             return;
         }
         User user = new User();
-        user.setUsername(username);
+        user.setName(username);
         user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
-        userRepository.save(user);
+        save(user);
 
         jsonResult.setStatus(true);
-        jsonResult.setMessage("register success");
+        jsonResult.setMessage("register");
         session.sendMessage(new TextMessage(jsonResult.toString()));
         log.info("用户{}注册成功, session {}", username, session.getId());
     }
@@ -147,7 +153,7 @@ public class UserService {
             return;
         }
         if (user.getRoom() == null) {
-            log.error("玩家{}不在房间中，无法准备", user.getUsername());
+            log.error("玩家{}不在房间中，无法准备", user.getName());
             result.setMessage("玩家不在房间中，无法接受邀请");
             session.sendMessage(new TextMessage(result.toString()));
             return;
@@ -159,15 +165,15 @@ public class UserService {
             return;
         }
         user.setReady(true);
-        userRepository.save(user);
+        save(user);
 
         //广播
         //给房间里所有人发消息，更新画面
         for (User u : room.getPlayers()) {
-            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getUsername())) {//下线的人暂时不管
+            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getName())) {//下线的人暂时不管
                 continue;
             }
-            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUsername());
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getName());
             roomService.broadcastRoomPlayers(socketSession);
         }
     }

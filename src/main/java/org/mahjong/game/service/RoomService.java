@@ -18,11 +18,8 @@ import org.springframework.web.socket.WebSocketSession;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -92,7 +89,7 @@ public class RoomService {
             return;
         }
         if (user.getRoom() == null) {
-            log.error("玩家{}不在房间中", user.getUsername());
+            log.error("玩家{}不在房间中", user.getName());
             result.setMessage("玩家不在房间中");
             session.sendMessage(new TextMessage(result.toString()));
             return;
@@ -115,27 +112,27 @@ public class RoomService {
                 continue;
             }
             Map<String, Object> map = Maps.newLinkedHashMap();
-            map.put("username", u.getUsername());
+            map.put("name", u.getName());
             map.put("point", u.getPoint());
             map.put("ready", u.isReady());
-            map.put("index", u.getIndex());
-            map.put("thrownTiles", u.getJsonThrownTileLists());
+            map.put("index", u.getGameid());
+//            map.put("thrownTiles", u.getJsonThrownTileLists());
             list.add(map);
         }
         resultMap.put("others", list);
 
         //加入自己的所有信息
         Map<String, Object> meMap = Maps.newLinkedHashMap();
-        meMap.put("username", user.getUsername());
+        meMap.put("name", user.getName());
         meMap.put("point", user.getPoint());
         meMap.put("ready", user.isReady());
-        meMap.put("index", user.getIndex());
-        meMap.put("ownTiles", user.getJsonOwnTileLists());
-        meMap.put("thrownTiles", user.getJsonThrownTileLists());
+        meMap.put("index", user.getGameid());
+//        meMap.put("ownTiles", user.getJsonOwnTileLists());
+//        meMap.put("thrownTiles", user.getJsonThrownTileLists());
 
         resultMap.put("me", meMap);
         //房间内剩余牌量
-        resultMap.put("restTiles", user.getRoom().getMahjongTiles().size());
+//        resultMap.put("restTiles", user.getRoom().getMahjongTiles().size());
         result.setObject(objectMapper.writeValueAsString(resultMap));
         session.sendMessage(new TextMessage(result.toString()));
 
@@ -175,10 +172,10 @@ public class RoomService {
             room = createRoom();
             room.getPlayers().add(user);
             user.setRoom(room);
-            user.setIndex(0);//自己就是第一个
+            user.setGameid(0);//自己就是第一个
             userService.save(user);
             roomMap.put(room.getId(), room);
-            log.info("玩家{}创建随机房间{}", user.getUsername(), room.getId());
+            log.info("玩家{}创建随机房间{}", user.getName(), room.getId());
             result.setStatus(true);
             result.setMessage("join random success");
             result.setObject(room.getId() + "");
@@ -188,7 +185,7 @@ public class RoomService {
 
         room.getPlayers().add(user);
         user.setRoom(room);
-        user.setIndex(room.getPlayers().size());
+        user.setGameid(room.getPlayers().size());
         userService.save(user);
 
         result.setStatus(true);
@@ -198,10 +195,10 @@ public class RoomService {
 
         //给房间里所有人发消息包括自己，更新画面
         for (User u : room.getPlayers()) {
-            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getUsername())) {//下线的人暂时不管
+            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getName())) {//下线的人暂时不管
                 continue;
             }
-            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUsername());
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getName());
             broadcastRoomPlayers(socketSession);
         }
     }
@@ -224,7 +221,7 @@ public class RoomService {
             return;
         }
         if (user.getRoom() != null) {
-            log.error("玩家{}已经在房间中，无法接受邀请", user.getUsername());
+            log.error("玩家{}已经在房间中，无法接受邀请", user.getName());
             result.setMessage("玩家已经在房间中，无法接受邀请");
             session.sendMessage(new TextMessage(result.toString()));
             return;
@@ -248,7 +245,7 @@ public class RoomService {
         }
         room.getPlayers().add(user);
         user.setRoom(room);
-        user.setIndex(room.getPlayers().size());
+        user.setGameid(room.getPlayers().size());
         userService.save(user);
 
 //        result.setStatus(true);
@@ -258,10 +255,10 @@ public class RoomService {
 
         //给房间里所有人发消息，更新画面
         for (User u : room.getPlayers()) {
-            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getUsername())) {//下线的人暂时不管
+            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getName())) {//下线的人暂时不管
                 continue;
             }
-            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUsername());
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getName());
             broadcastRoomPlayers(socketSession);
         }
     }
@@ -287,7 +284,7 @@ public class RoomService {
             return;
         }
         if (user.getRoom() != null) {
-            log.error("玩家{}已经在房间中，无法邀请队友", user.getUsername());
+            log.error("玩家{}已经在房间中，无法邀请队友", user.getName());
             result.setMessage("玩家已经在房间中，无法邀请队友");
             session.sendMessage(new TextMessage(result.toString()));
             return;
@@ -329,9 +326,9 @@ public class RoomService {
         result.setMessage("invitation");
 
         Map<String, Object> map = Maps.newLinkedHashMap();
-        map.put("banker", user.getUsername());
+        map.put("banker", user.getName());
         for (int i = 0; i < friends.size(); i++) {
-            map.put("username" + i, friends.get(i).getUsername());
+            map.put("name" + i, friends.get(i).getName());
         }
         map.put("room", room.getId());
         result.setObject(objectMapper.writeValueAsString(map));
@@ -364,13 +361,13 @@ public class RoomService {
             return;
         }
         if (user.getRoom() == null) {
-            log.error("玩家{}不在房间中，无法退出房间", user.getUsername());
+            log.error("玩家{}不在房间中，无法退出房间", user.getName());
             result.setMessage("玩家不在房间中，无法退出房间");
             session.sendMessage(new TextMessage(result.toString()));
             return;
         }
         if (user.getRoom().isPlaying()) {
-            log.error("玩家{}正在游戏不能退出", user.getUsername());
+            log.error("玩家{}正在游戏不能退出", user.getName());
             result.setMessage("玩家正在游戏不能退出");
             session.sendMessage(new TextMessage(result.toString()));
             return;
@@ -378,18 +375,18 @@ public class RoomService {
         //一人退出房间解散
         result.setStatus(true);
         result.setMessage("exit room");
-        result.setObject("玩家" + user.getUsername() + "退出游戏房间解散");
+        result.setObject("玩家" + user.getName() + "退出游戏房间解散");
 
         //这个房间就不存在了
         roomMap.remove(user.getRoom().getId());
         for (User u : user.getRoom().getPlayers()) {
-            u.setIndex(-1);
+            u.setGameid(-1);
             u.setRoom(null);
             u.setOwnTiles(Lists.newLinkedList());
             u.setThrownTiles(Lists.newLinkedList());
             u.setReady(false);
             userService.save(u);
-            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUsername());
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getName());
             socketSession.sendMessage(new TextMessage(result.toString()));
         }
     }
@@ -398,7 +395,7 @@ public class RoomService {
         room.getPlayers().remove(winner);
         room.getPlayers().add(0, winner);
         for (int i = 0; i < room.getPlayers().size(); i++) {
-            room.getPlayers().get(i).setIndex(i);
+            room.getPlayers().get(i).setGameid(i);
             userService.save(room.getPlayers().get(i));
         }
     }
@@ -524,51 +521,76 @@ public class RoomService {
 //        System.out.println(result);
 
         //广播胜利消息
+//        JsonResult result = new JsonResult();
+//        result.setStatus(true);
+//        result.setMessage("game tie");
+//
+//        Map<String, Object> resultMap = Maps.newLinkedHashMap();
+//
+//        //加入胜利玩家信息
+//        List<Object> list = Lists.newLinkedList();
+//
+//        Map<String, Object> map = Maps.newLinkedHashMap();
+//        map.put("username", "111");
+//        List<Object> list1 = Lists.newLinkedList();
+//        list1.add(Constants.MahjongTile.eastWind.getStruct());
+//        list1.add(Constants.MahjongTile.fiveBamboo.getStruct());
+//        list1.add(Constants.MahjongTile.white.getStruct());
+//        map.put("ownTiles", list1);
+//        map.put("thrownTiles", list1);
+//        map.put("index", 1);
+//        list.add(map);
+//
+//        map = Maps.newLinkedHashMap();
+//        map.put("username", "222");
+//        list1 = Lists.newLinkedList();
+//        list1.add(Constants.MahjongTile.eastWind.getStruct());
+//        list1.add(Constants.MahjongTile.fiveBamboo.getStruct());
+//        list1.add(Constants.MahjongTile.white.getStruct());
+//        map.put("ownTiles", list1);
+//        map.put("thrownTiles", list1);
+//        map.put("index", 2);
+//        list.add(map);
+//
+//        map = Maps.newLinkedHashMap();
+//        map.put("username", "333");
+//        list1 = Lists.newLinkedList();
+//        list1.add(Constants.MahjongTile.eastWind.getStruct());
+//        list1.add(Constants.MahjongTile.fiveBamboo.getStruct());
+//        list1.add(Constants.MahjongTile.white.getStruct());
+//        map.put("ownTiles", list1);
+//        map.put("thrownTiles", list1);
+//        map.put("index", 3);
+//        list.add(map);
+//
+//        //加入所有玩家所有信息
+//        resultMap.put("all", list);
+//        result.setObject(objectMapper.writeValueAsString(resultMap));
+//        System.out.println(result);
+
+//        JsonResult result = new JsonResult();
+//        result.setStatus(true);
+//        result.setMessage("allocate tile");
+//        Map<String, Object> map = Maps.newLinkedHashMap();
+//        map.put("username", "zyw");
+//        map.put("index", 2);
+//        result.setObject(objectMapper.writeValueAsString(map));
+//        System.out.println(result);
+
+//        JsonResult jsonResult = new JsonResult();
+//        jsonResult.setStatus(true);
+//        jsonResult.setMessage("login");
+//
+//        Map<String, Object> map = Maps.newLinkedHashMap();
+//        map.put("username", "zyw");
+//        map.put("point", 123);
+//        jsonResult.setObject(objectMapper.writeValueAsString(map));
+//        System.out.println(jsonResult);
+
         JsonResult result = new JsonResult();
         result.setStatus(true);
-        result.setMessage("game tie");
-
-        Map<String, Object> resultMap = Maps.newLinkedHashMap();
-
-        //加入胜利玩家信息
-        List<Object> list = Lists.newLinkedList();
-
-        Map<String, Object> map = Maps.newLinkedHashMap();
-        map.put("username", "111");
-        List<Object> list1 = Lists.newLinkedList();
-        list1.add(Constants.MahjongTile.eastWind.getStruct());
-        list1.add(Constants.MahjongTile.fiveBamboo.getStruct());
-        list1.add(Constants.MahjongTile.white.getStruct());
-        map.put("ownTiles", list1);
-        map.put("thrownTiles", list1);
-        map.put("index", 1);
-        list.add(map);
-
-        map = Maps.newLinkedHashMap();
-        map.put("username", "222");
-        list1 = Lists.newLinkedList();
-        list1.add(Constants.MahjongTile.eastWind.getStruct());
-        list1.add(Constants.MahjongTile.fiveBamboo.getStruct());
-        list1.add(Constants.MahjongTile.white.getStruct());
-        map.put("ownTiles", list1);
-        map.put("thrownTiles", list1);
-        map.put("index", 2);
-        list.add(map);
-
-        map = Maps.newLinkedHashMap();
-        map.put("username", "333");
-        list1 = Lists.newLinkedList();
-        list1.add(Constants.MahjongTile.eastWind.getStruct());
-        list1.add(Constants.MahjongTile.fiveBamboo.getStruct());
-        list1.add(Constants.MahjongTile.white.getStruct());
-        map.put("ownTiles", list1);
-        map.put("thrownTiles", list1);
-        map.put("index", 3);
-        list.add(map);
-
-        //加入所有玩家所有信息
-        resultMap.put("all", list);
-        result.setObject(objectMapper.writeValueAsString(resultMap));
+        result.setMessage("get tile");
+        result.setObject(objectMapper.writeValueAsString(Constants.MahjongTile.sixBamboo.getStruct()));
         System.out.println(result);
     }
 

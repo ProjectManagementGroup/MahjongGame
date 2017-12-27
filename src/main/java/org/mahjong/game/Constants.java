@@ -145,7 +145,7 @@ public class Constants {
         public Map<String, Object> getStruct() throws Exception {
             Map<String, Object> map = Maps.newHashMap();
             map.put("type", type);
-            map.put("number", number);
+            map.put("value", number);
             return map;
         }
 

@@ -68,22 +68,25 @@ public class GameService {
         }
         user.getOwnTiles().add(mahjongTile);//加入到玩家手牌
         userService.save(user);
-        log.info("成功为玩家{}发牌{}", user.getUsername(), mahjongTile.getChineseName());
+        log.info("成功为玩家{}发牌{}", user.getName(), mahjongTile.getChineseName());
 
         result.setStatus(true);
         result.setMessage("get tile");
-        result.setObject(mahjongTile.name());
+        result.setObject(objectMapper.writeValueAsString(mahjongTile.getStruct()));
         session.sendMessage(new TextMessage(result.toString()));
 
 
         result.setMessage("allocate tile");
-        result.setObject(user.getUsername());
+        Map<String, Object> map = Maps.newLinkedHashMap();
+        map.put("name", user.getName());
+        map.put("index", user.getGameid());
+        result.setObject(objectMapper.writeValueAsString(map));
         //给某个玩家发牌的时候要通知一下其他人，方便画页面
         for (User u : user.getRoom().getPlayers()) {
-            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getUsername())) {//下线的人暂时不管
+            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getName())) {//下线的人暂时不管
                 continue;
             }
-            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUsername());
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getName());
             socketSession.sendMessage(new TextMessage(result.toString()));
         }
     }
@@ -117,7 +120,7 @@ public class GameService {
         Constants.MahjongTile mahjongTile = Constants.MahjongTile.valueOf(payloadArray[1]);
         Set<Constants.MahjongTile> set = Sets.newHashSet(user.getOwnTiles());
         if (!set.contains(mahjongTile)) {
-            log.error("玩家{}不含有麻将牌{}", user.getUsername(), mahjongTile.getChineseName());
+            log.error("玩家{}不含有麻将牌{}", user.getName(), mahjongTile.getChineseName());
             result.setMessage("玩家没有这张麻将牌");
             session.sendMessage(new TextMessage(result.toString()));
             return;
@@ -130,7 +133,7 @@ public class GameService {
         }
         user.getThrownTiles().add(mahjongTile);//加入已出过的牌
         userService.save(user);
-        log.info("玩家{}成功出牌{}", user.getUsername(), mahjongTile.getChineseName());
+        log.info("玩家{}成功出牌{}", user.getName(), mahjongTile.getChineseName());
 
         //广播
         //给房间里所有人发消息
@@ -140,16 +143,16 @@ public class GameService {
 
         result.setMessage("other out");
         Map<String, Object> map = Maps.newLinkedHashMap();
-        map.put("username", user.getUsername());
-        map.put("index", user.getIndex());
+        map.put("name", user.getName());
+        map.put("index", user.getGameid());
         map.put("tile", mahjongTile.getStruct());
         result.setObject(objectMapper.writeValueAsString(map));
 
         for (User u : user.getRoom().getPlayers()) {
-            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getUsername())) {//下线的人暂时不管
+            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getName())) {//下线的人暂时不管
                 continue;
             }
-            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUsername());
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getName());
             socketSession.sendMessage(new TextMessage(result.toString()));
         }
         user.getRoom().setTimerStart(DateTime.now());//计时器启动
@@ -192,8 +195,8 @@ public class GameService {
      * 胡牌
      */
     public void processWin(Room room) throws Exception {
-        String username = room.getRequests().get(0).getUser().getUsername();
-        User user = userService.getUserFromUsername(username);
+        String name = room.getRequests().get(0).getUser().getName();
+        User user = userService.getUserFromUsername(name);
         //TODO:计算分数，更新玩家point值
 
         //广播胜利消息
@@ -204,17 +207,17 @@ public class GameService {
         Map<String, Object> resultMap = Maps.newLinkedHashMap();
 
         //加入胜利玩家信息
-        resultMap.put("winner-username", username);
-        resultMap.put("winner-index", user.getIndex());
+        resultMap.put("winnerName", name);
+        resultMap.put("winnerIndex", user.getGameid());
 
         List<Object> list = Lists.newLinkedList();
         for (User u : room.getPlayers()) {
             Map<String, Object> map = Maps.newLinkedHashMap();
-            map.put("username", u.getUsername());
-            map.put("ownTiles", u.getOwnTiles());
+            map.put("name", u.getName());
+            map.put("point", u.getPoint());
             map.put("thrownTiles", u.getJsonThrownTileLists());
             map.put("ownTiles", u.getJsonOwnTileLists());
-            map.put("index", u.getIndex());
+            map.put("index", u.getGameid());
             list.add(map);
         }
 
@@ -223,10 +226,10 @@ public class GameService {
         result.setObject(objectMapper.writeValueAsString(resultMap));
 
         for (User u : room.getPlayers()) {
-            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getUsername())) {//下线的人暂时不管
+            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getName())) {//下线的人暂时不管
                 continue;
             }
-            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUsername());
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getName());
             socketSession.sendMessage(new TextMessage(result.toString()));
         }
 
@@ -251,11 +254,11 @@ public class GameService {
         List<Object> list = Lists.newLinkedList();
         for (User u : room.getPlayers()) {
             Map<String, Object> map = Maps.newLinkedHashMap();
-            map.put("username", u.getUsername());
+            map.put("name", u.getName());
             map.put("ownTiles", u.getOwnTiles());
             map.put("thrownTiles", u.getJsonThrownTileLists());
             map.put("ownTiles", u.getJsonOwnTileLists());
-            map.put("index", u.getIndex());
+            map.put("index", u.getGameid());
             list.add(map);
         }
 
@@ -264,10 +267,10 @@ public class GameService {
         result.setObject(objectMapper.writeValueAsString(resultMap));
 
         for (User u : room.getPlayers()) {
-            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getUsername())) {//下线的人暂时不管
+            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getName())) {//下线的人暂时不管
                 continue;
             }
-            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUsername());
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getName());
             socketSession.sendMessage(new TextMessage(result.toString()));
         }
 
@@ -292,10 +295,10 @@ public class GameService {
         result.setMessage("game start");
         //首先广播信息，通知玩家游戏已经开始
         for (User u : room.getPlayers()) {
-            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getUsername())) {//下线的人暂时不管
+            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getName())) {//下线的人暂时不管
                 continue;
             }
-            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUsername());
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getName());
             socketSession.sendMessage(new TextMessage(result.toString()));
         }
 
@@ -306,7 +309,7 @@ public class GameService {
         List<Constants.MahjongTile> roomList = room.getMahjongTiles();//房间内剩余的牌
         for (User user : room.getPlayers()) {
             int range = 13;
-            if (room.getPlayerIndex(user.getUsername()) == 0) {
+            if (room.getPlayerIndex(user.getName()) == 0) {
                 range = 14;
             }
             for (int i = 0; i < range; i++) {
@@ -316,13 +319,14 @@ public class GameService {
                     user.setOwnTiles(Lists.newLinkedList());
                 }
                 user.getOwnTiles().add(mahjongTile);//加入到玩家手牌
-                log.info("成功为玩家{}发牌{}", user.getUsername(), mahjongTile.getChineseName());
+                log.info("成功为玩家{}发牌{}", user.getName(), mahjongTile.getChineseName());
             }
             userService.save(user);
-            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(user.getUsername());
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(user.getName());
             Map<String, Object> map = Maps.newLinkedHashMap();
-            map.put("own-index", user.getIndex());
-            map.put("own-tiles", user.getJsonOwnTileLists());
+            map.put("ownIndex", user.getGameid());
+            map.put("ownTiles", user.getJsonOwnTileLists());
+            result.setObject(objectMapper.writeValueAsString(map));
             socketSession.sendMessage(new TextMessage(result.toString()));
         }
 
@@ -357,7 +361,7 @@ public class GameService {
             room.setIndex(index);
             User user = room.getPlayers().get(index);
             //给第index个玩家发牌
-            WebSocketSession session = SystemWebSocketHandler.sessionsMap.get(user.getUsername());
+            WebSocketSession session = SystemWebSocketHandler.sessionsMap.get(user.getName());
             allocateMahjongTile(session);
         } else {
             //有人要碰牌或者吃牌或者杠
@@ -416,9 +420,9 @@ public class GameService {
             return -2;
         }
         //不是胡牌那么判断碰牌和吃牌和杠
-        String username = list.get(0).getUser().getUsername();
-        int index = room.getPlayerIndex(username);
-        WebSocketSession session = SystemWebSocketHandler.sessionsMap.get(username);
+        String name = list.get(0).getUser().getName();
+        int index = room.getPlayerIndex(name);
+        WebSocketSession session = SystemWebSocketHandler.sessionsMap.get(name);
         processBumpOrEatOrKong(session, room, list.get(0).getType().name());
         return index;
     }
@@ -438,7 +442,7 @@ public class GameService {
             return;
         }
         Room room = user.getRoom();
-        if (room.getIndex() != user.getIndex()) {
+        if (room.getIndex() != user.getGameid()) {
             result.setMessage("未轮到用户抓牌");
             session.sendMessage(new TextMessage(result.toString()));
             return;
@@ -447,7 +451,7 @@ public class GameService {
         //首先向其他玩家广播有人暗杠的消息
         result.setMessage("other dark kong success");
         Map<String, String> map = Maps.newLinkedHashMap();
-        map.put("username", user.getUsername());
+        map.put("name", user.getName());
         result.setObject(map.toString());
         broadcastSpecificMessage(user.getRoom(), result.toString(), user.getId());
 
@@ -474,10 +478,10 @@ public class GameService {
 
         result.setStatus(true);
         //向其他玩家广播
-        result.setMessage(type + " success");
+        result.setMessage("cut success");
         Map<String, Object> map = Maps.newLinkedHashMap();
-        map.put("username", user.getUsername());
-        map.put("index", user.getIndex());
+        map.put("name", user.getName());
+        map.put("index", user.getGameid());
         map.put("type", type);
         map.put("tile", room.getLastTile().getStruct());
         result.setObject(objectMapper.writeValueAsString(map));
@@ -495,10 +499,10 @@ public class GameService {
             if (u.getId() == userId) {
                 continue;
             }
-            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getUsername())) {//下线的人暂时不管
+            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getName())) {//下线的人暂时不管
                 continue;
             }
-            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getUsername());
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getName());
             socketSession.sendMessage(new TextMessage(json));
         }
     }

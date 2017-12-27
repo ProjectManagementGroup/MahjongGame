@@ -57,10 +57,10 @@
 #### 非游戏功能
 接口 | 备注 | 页面请求消息格式 | 正确服务器回复消息格式(json) | 错误服务器回复消息格式(json) | 参数说明
 ---|-|--------|---|---|---
-注册 | 注册之后需要登录才能开始游戏 | `register`<font color=red>\|</font>username<font color=red>\|</font>password | {"ok": true, "message": "注册成功", "object": null} | {"ok": false, "message": "错误信息", "object": null}
-登录 | | `login`<font color=red>\|</font>username<font color=red>\|</font>password | {"ok": true, "message": "登录成功", "object": null} | {"ok": false, "message": "错误信息", "object": null}
+注册 | 注册之后需要登录才能开始游戏 | `register`<font color=red>\|</font>name<font color=red>\|</font>password | {"ok": true, "message": "注册成功", "object": null} | {"ok": false, "message": "错误信息", "object": null}
+登录 | | `login`<font color=red>\|</font>name<font color=red>\|</font>password | {"ok": true, "message": "登录成功", "object": null} | {"ok": false, "message": "错误信息", "object": null}
 随便加入房间 | 服务器自动挑选一个未满的房间进行游戏，但是不会挑选好友房间 | `join-random`<font color=red>\|</font> | {"ok": true, "message": "join random success", "object": 20171212154942} | {"ok": false, "message": "错误信息", "object": null} | <small>object里面存放的20171212154942是随机房间号；注意，用户加入房间之后，不需要自己请求房间内所有成员的信息，用于画页面，而且房间内的其他成员也不需要自己请求，服务器会自动广播房间内所有成员信息，用户只需要收到消息后重画页面即可
-服务器推送房间内所有成员的信息 |  这个接口用于页面的时候，需要展示房间内所有玩家的信息：username、是否准备和积分 | 无需请求自动推送 |</small>{"ok": true, "message": "room information", "object": {"list":[{"username":"zyw","point":100,"ready":true},{"username":"xiaoming","point":50,"ready":false}]}}  | | list里面是一个用户信息的数组；注意游戏开始后就会自动立即为第一个人发牌，所以前端的webSocket要随时准备接收消息 
+服务器推送房间内所有成员的信息 |  这个接口用于页面的时候，需要展示房间内所有玩家的信息：name、是否准备和积分 | 无需请求自动推送 |</small>{"ok": true, "message": "room information", "object": {"list":[{"name":"zyw","point":100,"ready":true},{"name":"xiaoming","point":50,"ready":false}]}}  | | list里面是一个用户信息的数组；注意游戏开始后就会自动立即为第一个人发牌，所以前端的webSocket要随时准备接收消息 
 创建好友房间 | 必须并同时邀请三个好友，暂时设定为通过输入username进行邀请，如果输入错误或者好友不在线，那么创建房间失败；创建成功后，房主进入一个空房间等待其他三位好友 | `invite`<font color=red>\|</font>friend1<font color=red>\|</font>friend2<font color=red>\|</font>friend3 | 对于被邀请玩家收到的信息{"ok": true, "message": "invitation", "object": 20171212154942} 对于房主收到的信息{"ok": true, "message": "invite success", "object": 50}| | friend1、 friend2、 friend3指的是三位好友的用户名；前台通过message的invitation判断是不是一个邀请；object里面存放的是房间号
 用户接受邀请 | 暂时不允许拒绝邀请；只有在线才能接受邀请，否则根本收不到邀请消息 | `accept`<font color=red>\|</font>roomId | 无成功回复 | {"ok": false, "message": "错误信息", "object": null} | 成功之后，玩家立即加入房间，同时服务器自动向房间内包括本玩家在内的所有玩家广播房间信息
 
@@ -75,10 +75,10 @@
 准备 | | `ready`<font color=red>\|</font> | 对于所有玩家全部广播房间信息 | | | 
 游戏开始 | | 不需要请求 | {"ok": true, "message": "game start", "object": null} | | 
 发牌 |***不需要用户请求***，因为用户不知道自己的顺序，这个功能由服务器推送| 无 | 对被发牌玩家{"ok": true, "message": "get tile", "object": sevenDot} 对其他玩家：{"ok": true, "message": "allocate tile", "object": zyw} | {"ok": false, "message": "错误信息", "object": null} | message=get tile是回复类型由前台进行判断；object里面放的是麻将牌的名称；对其他玩家广播给zyw发牌了
-出牌 | 前台记得要给玩家出牌进行计时 | `out`<font color=red>\|</font>tile | 对于出牌玩家的回复消息{"ok": true, "message": "out success", "object": sevenDot}  对于其余玩家的广播消息{"ok": true, "message": "other out", "object": {"username":"zyw","tile":sevenDot}} | | 对其他玩家要广播是谁出了什么牌
+出牌 | 前台记得要给玩家出牌进行计时 | `out`<font color=red>\|</font>tile | 对于出牌玩家的回复消息{"ok": true, "message": "out success", "object": sevenDot}  对于其余玩家的广播消息{"ok": true, "message": "other out", "object": {"name":"zyw","tile":sevenDot}} | | 对其他玩家要广播是谁出了什么牌
 玩家请求碰牌 | 碰牌比吃牌优先 | `bump`<font color=red>\|</font> | {"ok": true, "message": "bump request success", "object": null} | |
 玩家请求吃牌 | | `eat`<font color=red>\|</font> | {"ok": true, "message": "eat request success", "object": null} | | 
-推送某玩家碰牌\吃牌成功 | 前台也请记录当前玩家要求吃和碰的是哪一张牌（虽然后台也会记录） | 后台推送不需要请求 | 对获得机会的玩家进行推送{"ok": true, "message": "bump success", "object": sevenDot} 对其余玩家进行推送{"ok": true, "message": "other bump success", "object": {"username":"456","type":bump}}| |
+推送某玩家碰牌\吃牌成功 | 前台也请记录当前玩家要求吃和碰的是哪一张牌（虽然后台也会记录） | 后台推送不需要请求 | 对获得机会的玩家进行推送{"ok": true, "message": "bump success", "object": sevenDot} 对其余玩家进行推送{"ok": true, "message": "other bump success", "object": {"name":"456","type":bump}}| |
 胡牌 |胡牌暂时由客户端负责计算，这样虽然不是很安全，但是客户端有代码可以参考，我暂时先不做了 | `win`<font color=red>\|</font> | 对胡牌玩家的推送{"ok": true, "message": "win", "object": 50} 对其余玩家的推送{"ok": true, "message": "lose", "object": -50}| 游戏结束后房间不散，玩家要重新准备
 
 </small>

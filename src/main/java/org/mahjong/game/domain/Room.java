@@ -1,13 +1,10 @@
 package org.mahjong.game.domain;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import org.joda.time.DateTime;
 import org.mahjong.game.Constants;
 
-import javax.persistence.Transient;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 不存在数据库里面，因为会频繁读取
@@ -144,7 +141,7 @@ public class Room {
 
     public int getPlayerIndex(String username) {
         for (int i = 0; i < 4; i++) {
-            if (username.equals(players.get(i).getUsername())) {
+            if (username.equals(players.get(i).getName())) {
                 return i;
             }
         }

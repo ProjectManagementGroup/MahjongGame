@@ -1,12 +1,10 @@
 package org.mahjong.game.domain;
 
 import com.google.common.collect.Lists;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.mahjong.game.Constants;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by zhaoyawen on 2017/5/16.
@@ -19,7 +17,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    private String name;
 
     private String password;
 
@@ -32,7 +30,7 @@ public class User {
      * 用户排序
      */
     @Transient
-    private int index;
+    private int gameid;
 
     /**
      * 玩家手牌，游戏开始前清空
@@ -75,12 +73,12 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Integer getPoint() {
@@ -123,12 +121,12 @@ public class User {
         this.ready = ready;
     }
 
-    public int getIndex() {
-        return index;
+    public int getGameid() {
+        return gameid;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public void setGameid(int gameid) {
+        this.gameid = gameid;
     }
 
     @Override
@@ -139,14 +137,14 @@ public class User {
         User user = (User) o;
 
         if (!id.equals(user.id)) return false;
-        if (!username.equals(user.username)) return false;
+        if (!name.equals(user.name)) return false;
         return password.equals(user.password);
     }
 
     @Override
     public int hashCode() {
         int result = id.hashCode();
-        result = 31 * result + username.hashCode();
+        result = 31 * result + name.hashCode();
         result = 31 * result + password.hashCode();
         return result;
     }

@@ -87,7 +87,7 @@ public class UserService {
         }
         String username = payloadArray[1];
         String password = payloadArray[2];
-        Optional<User> _user = userRepository.findOneByUsername(username.trim());
+        Optional<User> _user = userRepository.findOneByName(username.trim());
         if (!_user.isPresent() || !_user.get().getPassword().equals(DigestUtils.md5DigestAsHex(password.getBytes()))) {
             jsonResult.setMessage("login");
             session.sendMessage(new TextMessage(jsonResult.toString()));
@@ -123,7 +123,7 @@ public class UserService {
         }
         String username = payloadArray[1];
         String password = payloadArray[2];
-        Optional<User> _user = userRepository.findOneByUsername(username.trim());
+        Optional<User> _user = userRepository.findOneByName(username.trim());
         if (_user.isPresent()) {
             jsonResult.setMessage("register");
             session.sendMessage(new TextMessage(jsonResult.toString()));

@@ -604,7 +604,7 @@ public class RoomService {
         JsonResult jsonResult = new JsonResult();
         String username = payloadArray[1];
         String password = payloadArray[2];
-        Optional<User> _user = userRepository.findOneByUsername(username.trim());
+        Optional<User> _user = userRepository.findOneByName(username.trim());
         if (_user.isPresent()) {
             jsonResult.setMessage("register");
             session.sendMessage(new TextMessage(jsonResult.toString()));

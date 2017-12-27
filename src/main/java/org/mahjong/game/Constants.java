@@ -64,16 +64,18 @@ public class Constants {
      * 麻将花色
      */
     public enum MahjongType {
-        dot("饼(筒)"),
-        wind("东西南北风"),
-        bamboo("条"),
-        myriad("万"),
-        dragon("中发白");
+        dot("饼(筒)", 1),
+        wind("东西南北风", 3),
+        bamboo("条", 0),
+        myriad("万", 2),
+        dragon("中发白", 4);
 
         private String chineseName;
+        private int typeid;
 
-        MahjongType(String chineseName) {
+        MahjongType(String chineseName, int typeid) {
             this.chineseName = chineseName;
+            this.typeid = typeid;
         }
 
         public String getChineseName() {
@@ -85,6 +87,9 @@ public class Constants {
             return this.chineseName;
         }
 
+        public int getTypeid() {
+            return typeid;
+        }
     }
 
     /**
@@ -146,6 +151,7 @@ public class Constants {
             Map<String, Object> map = Maps.newHashMap();
             map.put("type", type);
             map.put("value", number);
+            map.put("typeid", type.typeid);
             return map;
         }
 
@@ -160,6 +166,7 @@ public class Constants {
         public int getNumber() {
             return number;
         }
+
     }
 
 

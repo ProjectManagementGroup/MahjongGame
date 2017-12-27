@@ -644,12 +644,6 @@ public class RoomService {
 
 
         JsonResult result = new JsonResult();
-        String username = Optional.ofNullable(session.getAttributes().get("username")).orElse("").toString();
-        if (username.equals("")) {
-            result.setMessage("用户未登录");
-            session.sendMessage(new TextMessage(result.toString()));
-            log.error("用户未登录");
-        }
 
         //给被邀请的人发消息
         //要把邀请人的信息和其他被邀请的人的消息都发送出去
@@ -657,13 +651,16 @@ public class RoomService {
         result.setMessage("invitation");
 
         Map<String, Object> map = Maps.newLinkedHashMap();
-        map.put("banker", username);
+        map.put("banker", "zyw");
         map.put("name0", "friend0");
         map.put("name1", "friend1");
         map.put("name2", "friend2");
         map.put("room", "20171227101010");
         result.setObject(objectMapper.writeValueAsString(map));
 
+        //给发送邀请的人发消息
+        result.setMessage("invite success");
+        result.setObject(null);
         session.sendMessage(new TextMessage(result.toString()));
 
 

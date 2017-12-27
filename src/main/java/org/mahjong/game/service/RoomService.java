@@ -657,10 +657,6 @@ public class RoomService {
         map.put("name2", "friend2");
         map.put("room", "20171227101010");
         result.setObject(objectMapper.writeValueAsString(map));
-
-        //给发送邀请的人发消息
-        result.setMessage("invite success");
-        result.setObject(null);
         session.sendMessage(new TextMessage(result.toString()));
 
 

@@ -659,50 +659,63 @@ public class RoomService {
 //        session.sendMessage(new TextMessage(result.toString()));
 
 
+//        JsonResult result = new JsonResult();
+//        result.setStatus(true);
+//        result.setMessage("room information");
+//
+//        Map<String, Object> resultMap = Maps.newLinkedHashMap();
+//
+//        //把非自己的所有玩家的可见信息全部广播
+//        List<Object> list = Lists.newLinkedList();
+//
+//        Map<String, Object> map = Maps.newLinkedHashMap();
+//        map.put("name", "friend0");
+//        map.put("point", 0);
+//        map.put("ready", true);
+//        map.put("index", 0);
+//        list.add(map);
+//
+//        map = Maps.newLinkedHashMap();
+//        map.put("name", "friend1");
+//        map.put("point", 1);
+//        map.put("ready", true);
+//        map.put("index", 1);
+//        list.add(map);
+//
+//        map = Maps.newLinkedHashMap();
+//        map.put("name", "friend2");
+//        map.put("point", 2);
+//        map.put("ready", false);
+//        map.put("index", 2);
+//        list.add(map);
+//
+//        resultMap.put("others", list);
+//
+//        //加入自己的所有信息
+//        Map<String, Object> meMap = Maps.newLinkedHashMap();
+//        meMap.put("name", "zyw");
+//        meMap.put("point", 300);
+//        meMap.put("ready", false);
+//        meMap.put("index", 3);
+//        resultMap.put("me", meMap);
+//        result.setObject(objectMapper.writeValueAsString(resultMap));
+//        session.sendMessage(new TextMessage(result.toString()));
+
         JsonResult result = new JsonResult();
         result.setStatus(true);
-        result.setMessage("room information");
+        result.setMessage("game start allocate");
 
-        Map<String, Object> resultMap = Maps.newLinkedHashMap();
-
-        //把非自己的所有玩家的可见信息全部广播
-        List<Object> list = Lists.newLinkedList();
-
+        //给第一个玩家发14张牌，其他玩家13张牌
+        List<Object> list1 = Lists.newLinkedList();
+        list1.add(Constants.MahjongTile.eastWind.getStruct());
+        list1.add(Constants.MahjongTile.fiveBamboo.getStruct());
+        list1.add(Constants.MahjongTile.white.getStruct());
         Map<String, Object> map = Maps.newLinkedHashMap();
-        map.put("name", "friend0");
-        map.put("point", 0);
-        map.put("ready", true);
-        map.put("index", 0);
-        list.add(map);
+        map.put("ownIndex", 0);
+        map.put("ownTiles", list1);
 
-        map = Maps.newLinkedHashMap();
-        map.put("name", "friend1");
-        map.put("point", 1);
-        map.put("ready", true);
-        map.put("index", 1);
-        list.add(map);
-
-        map = Maps.newLinkedHashMap();
-        map.put("name", "friend2");
-        map.put("point", 2);
-        map.put("ready", false);
-        map.put("index", 2);
-        list.add(map);
-
-        resultMap.put("others", list);
-
-        //加入自己的所有信息
-        Map<String, Object> meMap = Maps.newLinkedHashMap();
-        meMap.put("name", "zyw");
-        meMap.put("point", 300);
-        meMap.put("ready", false);
-        meMap.put("index", 3);
-        resultMap.put("me", meMap);
-        result.setObject(objectMapper.writeValueAsString(resultMap));
+        result.setObject(objectMapper.writeValueAsString(map));
         session.sendMessage(new TextMessage(result.toString()));
-
-
     }
-
 
 }

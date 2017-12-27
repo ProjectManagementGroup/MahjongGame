@@ -619,28 +619,53 @@ public class RoomService {
 //        session.sendMessage(new TextMessage(jsonResult.toString()));
 //        log.info("用户{}注册成功, session {}", username, session.getId());
 
-        JsonResult jsonResult = new JsonResult();
-        if (payloadArray.length != 3) {
-            jsonResult.setMessage("login");
-            session.sendMessage(new TextMessage(jsonResult.toString()));
-            return;
-        }
-        String username = payloadArray[1];
-        String password = payloadArray[2];
+//        JsonResult jsonResult = new JsonResult();
+//        if (payloadArray.length != 3) {
+//            jsonResult.setMessage("login");
+//            session.sendMessage(new TextMessage(jsonResult.toString()));
+//            return;
+//        }
+//        String username = payloadArray[1];
+//        String password = payloadArray[2];
+//
+//        jsonResult.setStatus(true);
+//        jsonResult.setMessage("login");
+//
+//        Map<String, Object> map = Maps.newLinkedHashMap();
+//        map.put("name", username);
+//        map.put("point", 100);
+//        jsonResult.setObject(objectMapper.writeValueAsString(map));
+//        session.sendMessage(new TextMessage(jsonResult.toString()));
+//
+//        session.getAttributes().put("username", username);
+//        SystemWebSocketHandler.sessions.add(session);
+//        SystemWebSocketHandler.sessionsMap.put(username, session);//key是userName
+//        log.info("用户{}登陆成功, 分配了session {}", username, session.getId());
 
-        jsonResult.setStatus(true);
-        jsonResult.setMessage("login");
+
+        JsonResult result = new JsonResult();
+        String username = Optional.ofNullable(session.getAttributes().get("username")).orElse("").toString();
+        if (username.equals("")) {
+            result.setMessage("用户未登录");
+            session.sendMessage(new TextMessage(result.toString()));
+            log.error("用户未登录");
+        }
+
+        //给被邀请的人发消息
+        //要把邀请人的信息和其他被邀请的人的消息都发送出去
+        result.setStatus(true);
+        result.setMessage("invitation");
 
         Map<String, Object> map = Maps.newLinkedHashMap();
-        map.put("name", username);
-        map.put("point", 100);
-        jsonResult.setObject(objectMapper.writeValueAsString(map));
-        session.sendMessage(new TextMessage(jsonResult.toString()));
+        map.put("banker", username);
+        map.put("name0", "friend0");
+        map.put("name1", "friend1");
+        map.put("name2", "friend2");
+        map.put("room", "20171227101010");
+        result.setObject(objectMapper.writeValueAsString(map));
 
-        session.getAttributes().put("username", username);
-        SystemWebSocketHandler.sessions.add(session);
-        SystemWebSocketHandler.sessionsMap.put(username, session);//key是userName
-        log.info("用户{}登陆成功, 分配了session {}", username, session.getId());
+        session.sendMessage(new TextMessage(result.toString()));
+
 
     }
 

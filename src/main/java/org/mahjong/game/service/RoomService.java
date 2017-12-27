@@ -601,23 +601,47 @@ public class RoomService {
     }
 
     public void test(String[] payloadArray, WebSocketSession session) throws Exception {
+//        JsonResult jsonResult = new JsonResult();
+//        String username = payloadArray[1];
+//        String password = payloadArray[2];
+//        Optional<User> _user = userRepository.findOneByName(username.trim());
+//        if (_user.isPresent()) {
+//            jsonResult.setMessage("register");
+//            session.sendMessage(new TextMessage(jsonResult.toString()));
+//            return;
+//        }
+//        User user = new User();
+//        user.setName(username);
+//        user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
+//
+//        jsonResult.setStatus(true);
+//        jsonResult.setMessage("register");
+//        session.sendMessage(new TextMessage(jsonResult.toString()));
+//        log.info("用户{}注册成功, session {}", username, session.getId());
+
         JsonResult jsonResult = new JsonResult();
-        String username = payloadArray[1];
-        String password = payloadArray[2];
-        Optional<User> _user = userRepository.findOneByName(username.trim());
-        if (_user.isPresent()) {
-            jsonResult.setMessage("register");
+        if (payloadArray.length != 3) {
+            jsonResult.setMessage("login");
             session.sendMessage(new TextMessage(jsonResult.toString()));
             return;
         }
-        User user = new User();
-        user.setName(username);
-        user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
+        String username = payloadArray[1];
+        String password = payloadArray[2];
 
         jsonResult.setStatus(true);
-        jsonResult.setMessage("register");
+        jsonResult.setMessage("login");
+
+        Map<String, Object> map = Maps.newLinkedHashMap();
+        map.put("name", username);
+        map.put("point", 100);
+        jsonResult.setObject(objectMapper.writeValueAsString(map));
         session.sendMessage(new TextMessage(jsonResult.toString()));
-        log.info("用户{}注册成功, session {}", username, session.getId());
+
+        session.getAttributes().put("username", username);
+        SystemWebSocketHandler.sessions.add(session);
+        SystemWebSocketHandler.sessionsMap.put(username, session);//key是userName
+        log.info("用户{}登陆成功, 分配了session {}", username, session.getId());
+
     }
 
 

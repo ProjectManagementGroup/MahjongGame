@@ -25,7 +25,7 @@ public class UserService {
 
     private static Logger log = LoggerFactory.getLogger(UserService.class);
 
-    private Map<String, User> allUsers = Maps.newLinkedHashMap();
+    public Map<String, User> allUsers = Maps.newLinkedHashMap();
 
     @Inject
     private UserRepository userRepository;

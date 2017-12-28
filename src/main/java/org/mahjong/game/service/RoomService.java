@@ -116,9 +116,6 @@ public class RoomService {
         //把非自己的所有玩家的可见信息全部广播
         List<Object> list = Lists.newLinkedList();
         for (User u : user.getRoom().getPlayers()) {
-            if (u.getId() == user.getId()) {
-                continue;
-            }
             Map<String, Object> map = Maps.newLinkedHashMap();
             map.put("name", u.getName());
             map.put("point", u.getPoint());
@@ -127,18 +124,18 @@ public class RoomService {
 //            map.put("thrownTiles", u.getJsonThrownTileLists());
             list.add(map);
         }
-        resultMap.put("others", list);
+        resultMap.put("all", list);
 
         //加入自己的所有信息
-        Map<String, Object> meMap = Maps.newLinkedHashMap();
-        meMap.put("name", user.getName());
-        meMap.put("point", user.getPoint());
-        meMap.put("ready", user.isReady());
-        meMap.put("index", user.getGameid());
+//        Map<String, Object> meMap = Maps.newLinkedHashMap();
+//        meMap.put("name", user.getName());
+//        meMap.put("point", user.getPoint());
+//        meMap.put("ready", user.isReady());
+//        meMap.put("index", user.getGameid());
 //        meMap.put("ownTiles", user.getJsonOwnTileLists());
 //        meMap.put("thrownTiles", user.getJsonThrownTileLists());
 
-        resultMap.put("me", meMap);
+//        resultMap.put("me", meMap);
         //房间内剩余牌量
 //        resultMap.put("restTiles", user.getRoom().getMahjongTiles().size());
         result.setObject(objectMapper.writeValueAsString(resultMap));
@@ -604,17 +601,22 @@ public class RoomService {
 //        result.setObject(objectMapper.writeValueAsString(Constants.MahjongTile.sixBamboo.getStruct()));
 //        System.out.println(result);
 
+//
+//        JsonResult result = new JsonResult();
+//        result.setStatus(true);
+//        result.setMessage("speak");
+//
+//        Map<String, Object> map = Maps.newLinkedHashMap();
+//        map.put("speaker", "zyw");
+//        map.put("index", 0);
+//        map.put("content", "我进房间啦");
+//        result.setObject(objectMapper.writeValueAsString(map));
+//        System.out.println(result);
 
-        JsonResult result = new JsonResult();
-        result.setStatus(true);
-        result.setMessage("speak");
-
-        Map<String, Object> map = Maps.newLinkedHashMap();
-        map.put("speaker", "zyw");
-        map.put("index", 0);
-        map.put("content", "我进房间啦");
-        result.setObject(objectMapper.writeValueAsString(map));
-        System.out.println(result);
+//        String type = "dot";
+//        String value = "2";
+//        Constants.MahjongTile mahjongTile = Constants.MahjongTile.getTileByTypeAndNumber(Constants.MahjongType.valueOf(type), Integer.parseInt(value));
+//        System.out.println(mahjongTile);
     }
 
     public void test(String[] payloadArray, WebSocketSession session) throws Exception {

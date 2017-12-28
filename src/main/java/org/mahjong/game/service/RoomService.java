@@ -356,6 +356,7 @@ public class RoomService {
         result.setMessage("invite success");
         result.setObject(room.getId() + "");
         session.sendMessage(new TextMessage(result.toString()));
+        broadcastRoomPlayers(session);
 
         log.info("用户{}创建了好友房间，session {}，房间id{}，邀请三位好友:{}/{}、{}/{}、{}/{}", user.getName(), session.getId(), room.getId(), friends.get(0).getName(), sessions.get(0).getId(), friends.get(1).getName(), sessions.get(1).getId(), friends.get(2).getName(), sessions.get(2).getId());
         Constants.roomMap.put(room.getId(), room);

@@ -36,6 +36,7 @@ public class ScheduledTaskService {
     @Transactional
     @Async
     public void checkRoomStart() throws Exception {
+        log.info("定时任务：检查游戏是否开始");
         A:
         for (Room room : Constants.roomMap.values()) {
             if (room.getPlayers().size() != 4 || room.isPlaying()) {//如果房间已经在游戏，就不能重复开始
@@ -60,6 +61,7 @@ public class ScheduledTaskService {
     @Transactional
     @Async
     public void selectPriorRequest() throws Exception {
+        log.info("定时任务：检查下一轮是否开始");
         for (Room room : Constants.roomMap.values()) {
             //如果计时器为空，说明已经发完了牌，现在正在等到用户出牌请求
             //如果计时器不为空，说明已经出牌完，不管怎样都等待5秒后才进行下一轮的发牌处理

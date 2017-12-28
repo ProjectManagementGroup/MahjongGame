@@ -96,7 +96,7 @@ public class GameService {
      */
     public void throwMahjongTile(String[] payloadArray, WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
-        if (payloadArray.length != 2) {
+        if (payloadArray.length != 3) {
             result.setMessage("请求信息错误");
             session.sendMessage(new TextMessage(result.toString()));
             return;
@@ -117,7 +117,14 @@ public class GameService {
             session.sendMessage(new TextMessage(result.toString()));
             return;
         }
-        Constants.MahjongTile mahjongTile = Constants.MahjongTile.valueOf(payloadArray[1]);
+        String type = payloadArray[1];
+        String value = payloadArray[2];
+        Constants.MahjongTile mahjongTile = Constants.MahjongTile.getTileByTypeAndNumber(Constants.MahjongType.valueOf(type), Integer.parseInt(value));
+        if (mahjongTile == null) {
+            result.setMessage("不存在这张牌");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
         Set<Constants.MahjongTile> set = Sets.newHashSet(user.getOwnTiles());
         if (!set.contains(mahjongTile)) {
             log.error("玩家{}不含有麻将牌{}", user.getName(), mahjongTile.getChineseName());

@@ -155,6 +155,15 @@ public class Constants {
             return map;
         }
 
+        public static MahjongTile getTileByTypeAndNumber(MahjongType type, int number) {
+            for (MahjongTile tile : MahjongTile.values()) {
+                if (tile.getType() == type && tile.number == number) {
+                    return tile;
+                }
+            }
+            return null;
+        }
+
         public String getChineseName() {
             return chineseName;
         }

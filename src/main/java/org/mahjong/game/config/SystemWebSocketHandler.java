@@ -114,8 +114,8 @@ public class SystemWebSocketHandler implements WebSocketHandler {
                 break;
             /**
              * 用户出牌
-             * out|tile
-             * tile指麻将牌的名字
+             * out|tile对象
+             * tile指麻将牌对象
              */
             case "out":
                 gameService.throwMahjongTile(payloadArray, session);

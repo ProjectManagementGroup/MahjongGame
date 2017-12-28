@@ -68,7 +68,7 @@ public class GameService {
         }
         user.getOwnTiles().add(mahjongTile);//加入到玩家手牌
         userService.save(user);
-        log.info("成功为玩家{}发牌{}，session {}，房间id{}", user.getName(), mahjongTile.getChineseName(), session.getId(), user.getRoom().getId());
+        log.info("成功为玩家{} <发牌> {}，session {}，房间id{}", user.getName(), mahjongTile.getChineseName(), session.getId(), user.getRoom().getId());
 
         result.setStatus(true);
         result.setMessage("get tile");
@@ -84,6 +84,10 @@ public class GameService {
         //给某个玩家发牌的时候要通知一下其他人，方便画页面
         for (User u : user.getRoom().getPlayers()) {
             if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getName())) {//下线的人暂时不管
+                continue;
+            }
+            //不给出牌人发消息
+            if (u.getId() == user.getId()) {
                 continue;
             }
             WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getName());
@@ -140,7 +144,7 @@ public class GameService {
         }
         user.getThrownTiles().add(mahjongTile);//加入已出过的牌
         userService.save(user);
-        log.info("玩家{}成功出牌{}，session {}，房间id{}", user.getName(), mahjongTile.getChineseName(), session.getId(), user.getRoom().getId());
+        log.info("玩家{}成功 <出牌> {}，session {}，房间id{}", user.getName(), mahjongTile.getChineseName(), session.getId(), user.getRoom().getId());
 
         //广播
         //给房间里所有人发消息
@@ -157,6 +161,10 @@ public class GameService {
 
         for (User u : user.getRoom().getPlayers()) {
             if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getName())) {//下线的人暂时不管
+                continue;
+            }
+            //不给出牌人发消息
+            if (u.getId() == user.getId()) {
                 continue;
             }
             WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getName());
@@ -381,7 +389,7 @@ public class GameService {
                     user.setOwnTiles(Lists.newLinkedList());
                 }
                 user.getOwnTiles().add(mahjongTile);//加入到玩家手牌
-                log.info("成功为玩家{}发牌{}", user.getName(), mahjongTile.getChineseName());
+                log.info("成功为玩家{} <发牌> {}", user.getName(), mahjongTile.getChineseName());
             }
             userService.save(user);
             WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(user.getName());

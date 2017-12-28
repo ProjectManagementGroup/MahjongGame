@@ -97,7 +97,7 @@ public class RoomService {
             return;
         }
         if (user.getRoom() == null) {
-            log.error("玩家{}不在房间中", user.getName());
+            log.error("broadcastRoomPlayers::玩家{}不在房间中", user.getName());
             result.setMessage("玩家不在房间中");
             session.sendMessage(new TextMessage(result.toString()));
             return;

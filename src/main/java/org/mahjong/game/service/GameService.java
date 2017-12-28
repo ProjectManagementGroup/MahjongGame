@@ -79,7 +79,7 @@ public class GameService {
         result.setMessage("allocate tile");
         Map<String, Object> map = Maps.newLinkedHashMap();
         map.put("name", user.getName());
-        map.put("index", user.getGameid());
+        map.put("gameid", user.getGameid());
         result.setObject(objectMapper.writeValueAsString(map));
         //给某个玩家发牌的时候要通知一下其他人，方便画页面
         for (User u : user.getRoom().getPlayers()) {
@@ -151,7 +151,7 @@ public class GameService {
         result.setMessage("other out");
         Map<String, Object> map = Maps.newLinkedHashMap();
         map.put("name", user.getName());
-        map.put("index", user.getGameid());
+        map.put("gameid", user.getGameid());
         map.put("tile", mahjongTile.getStruct());
         result.setObject(objectMapper.writeValueAsString(map));
 
@@ -196,7 +196,7 @@ public class GameService {
 
         Map<String, Object> map = Maps.newLinkedHashMap();
         map.put("speaker", user.getName());
-        map.put("index", user.getGameid());
+        map.put("gameid", user.getGameid());
         map.put("content", payloadArray[1]);
         result.setObject(objectMapper.writeValueAsString(map));
 
@@ -275,7 +275,7 @@ public class GameService {
             map.put("point", u.getPoint());
             map.put("thrownTiles", u.getJsonThrownTileLists());
             map.put("ownTiles", u.getJsonOwnTileLists());
-            map.put("index", u.getGameid());
+            map.put("gameid", u.getGameid());
             list.add(map);
         }
 
@@ -318,7 +318,7 @@ public class GameService {
             map.put("ownTiles", u.getOwnTiles());
             map.put("thrownTiles", u.getJsonThrownTileLists());
             map.put("ownTiles", u.getJsonOwnTileLists());
-            map.put("index", u.getGameid());
+            map.put("gameid", u.getGameid());
             list.add(map);
         }
 
@@ -547,7 +547,7 @@ public class GameService {
         result.setMessage("cut success");
         Map<String, Object> map = Maps.newLinkedHashMap();
         map.put("name", user.getName());
-        map.put("index", user.getGameid());
+        map.put("gameid", user.getGameid());
         map.put("type", type);
         map.put("tile", room.getLastTile().getStruct());
         result.setObject(objectMapper.writeValueAsString(map));

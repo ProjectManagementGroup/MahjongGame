@@ -598,10 +598,22 @@ public class RoomService {
 //        jsonResult.setObject(objectMapper.writeValueAsString(map));
 //        System.out.println(jsonResult);
 
+//        JsonResult result = new JsonResult();
+//        result.setStatus(true);
+//        result.setMessage("get tile");
+//        result.setObject(objectMapper.writeValueAsString(Constants.MahjongTile.sixBamboo.getStruct()));
+//        System.out.println(result);
+
+
         JsonResult result = new JsonResult();
         result.setStatus(true);
-        result.setMessage("get tile");
-        result.setObject(objectMapper.writeValueAsString(Constants.MahjongTile.sixBamboo.getStruct()));
+        result.setMessage("speak");
+
+        Map<String, Object> map = Maps.newLinkedHashMap();
+        map.put("speaker", "zyw");
+        map.put("index", 0);
+        map.put("content", "我进房间啦");
+        result.setObject(objectMapper.writeValueAsString(map));
         System.out.println(result);
     }
 
@@ -723,12 +735,12 @@ public class RoomService {
 //        session.sendMessage(new TextMessage(result.toString()));
 
 
-        JsonResult result = new JsonResult();
-
-
-        result.setStatus(true);
-        result.setMessage("out success");
-        session.sendMessage(new TextMessage(result.toString()));
+//        JsonResult result = new JsonResult();
+//
+//
+//        result.setStatus(true);
+//        result.setMessage("out success");
+//        session.sendMessage(new TextMessage(result.toString()));
 
 //        result.setMessage("other out");
 //        Map<String, Object> map = Maps.newLinkedHashMap();
@@ -737,6 +749,8 @@ public class RoomService {
 //        map.put("tile", Constants.MahjongTile.sixBamboo.getStruct());
 //        result.setObject(objectMapper.writeValueAsString(map));
 //        session.sendMessage(new TextMessage(result.toString()));
+
+
     }
 
 }

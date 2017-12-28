@@ -162,6 +162,13 @@ public class SystemWebSocketHandler implements WebSocketHandler {
             case "eat":
                 gameService.bumpOrEatOrKong(session, "eat");
                 break;
+            /**
+             * 发言
+             * speak|hahahaha
+             */
+            case "speak":
+                gameService.speak(payloadArray, session);
+                break;
             default:
                 log.error("请求消息错误");
                 session.sendMessage(new TextMessage(new JsonResult("消息格式错误").toString()));

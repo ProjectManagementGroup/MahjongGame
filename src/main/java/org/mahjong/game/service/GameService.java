@@ -158,6 +158,52 @@ public class GameService {
         user.getRoom().setTimerStart(DateTime.now());//计时器启动
     }
 
+
+    /**
+     * 发言，只有在房间里才能发言
+     */
+    public void speak(String[] payloadArray, WebSocketSession session) throws Exception {
+        JsonResult result = new JsonResult();
+        if (payloadArray.length != 2) {
+            result.setMessage("请求信息错误");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        User user = userService.getUserFromSession(session);
+        if (user == null) {
+            result.setMessage("用户信息错误, 用户不存在");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        if (user.getRoom() == null) {
+            result.setMessage("玩家不在房间内");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+
+
+        //广播
+        //给房间里所有人发消息
+        result.setStatus(true);
+        result.setMessage("speak");
+
+        Map<String, Object> map = Maps.newLinkedHashMap();
+        map.put("speaker", user.getName());
+        map.put("index", user.getGameid());
+        map.put("content", payloadArray[1]);
+        result.setObject(objectMapper.writeValueAsString(map));
+
+        for (User u : user.getRoom().getPlayers()) {
+            if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getName())) {//下线的人暂时不管
+                continue;
+            }
+            WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getName());
+            socketSession.sendMessage(new TextMessage(result.toString()));
+        }
+        log.info("玩家{}发言，session {}，房间id{}，发言内容{}", user.getName(), session.getId(), user.getRoom().getId(), payloadArray[1]);
+
+    }
+
     /**
      * 胡牌请求：前台判断，如果有人胡了，就加入队列
      */

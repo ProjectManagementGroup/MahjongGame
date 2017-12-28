@@ -234,13 +234,13 @@ public class RoomService {
             session.sendMessage(new TextMessage(result.toString()));
             return;
         }
-        if (!roomMap.containsKey(payloadArray[1])) {
+        if (!roomMap.containsKey(Long.parseLong(payloadArray[1]))) {
             log.error("房间{}不存在", payloadArray[1]);
             result.setMessage("房间不存在");
             session.sendMessage(new TextMessage(result.toString()));
             return;
         }
-        Room room = roomMap.get(payloadArray[1]);
+        Room room = roomMap.get(Long.parseLong(payloadArray[1]));
         if (!room.isFriendly()) {
             result.setMessage("不是好友房间");
             session.sendMessage(new TextMessage(result.toString()));

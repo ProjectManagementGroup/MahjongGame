@@ -188,15 +188,16 @@ public class SystemWebSocketHandler implements WebSocketHandler {
             WebSocketSession s = it.next();
             if (s == session) {
                 it.remove();
-                sessionsMap.remove(s.getAttributes().get("webUser") + "");
+                log.debug("WebSocket {}关闭！", session.getId());
+                sessionsMap.remove(s.getAttributes().get("username") + "");
                 continue;
             }
             if (!s.isOpen()) {
                 it.remove();
-                sessionsMap.remove(s.getAttributes().get("webUser") + "");
+                log.debug("WebSocket {}关闭！", session.getId());
+                sessionsMap.remove(s.getAttributes().get("username") + "");
             }
         }
-        log.debug("WebSocket关闭！");
     }
 
     @Override

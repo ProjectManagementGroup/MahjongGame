@@ -110,7 +110,6 @@ public class UserService {
         SystemWebSocketHandler.sessionsMap.put(username, session);//key是userName
         log.info("用户{}登陆成功, 分配了session {}", username, session.getId());
 
-
     }
 
     @Transactional
@@ -166,7 +165,7 @@ public class UserService {
         }
         user.setReady(true);
         save(user);
-
+        log.info("用户{}, session {}, 房间id{}，准备了", user.getName(), session.getId(), room.getId());
         //广播
         //给房间里所有人发消息，更新画面
         for (User u : room.getPlayers()) {

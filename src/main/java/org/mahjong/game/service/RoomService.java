@@ -269,6 +269,8 @@ public class RoomService {
             WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getName());
             broadcastRoomPlayers(socketSession);
         }
+        log.info("用户{}接受了邀请，session {}，房间id{}", user.getName(), session.getId(), room.getId());
+
     }
 
     /**
@@ -356,7 +358,7 @@ public class RoomService {
         result.setMessage("invite success");
         result.setObject(null);
         session.sendMessage(new TextMessage(result.toString()));
-
+        log.info("用户{}创建了好友房间，session {}，房间id{}，邀请三位好友:{}/()、{}/{}、{}/{}", user.getName(), session.getId(), room.getId(), friends.get(0).getName(), sessions.get(0).getId(), friends.get(1).getName(), sessions.get(1).getId(), friends.get(3).getName(), sessions.get(3).getId());
         roomMap.put(room.getId(), room);
     }
 

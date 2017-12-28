@@ -68,7 +68,7 @@ public class GameService {
         }
         user.getOwnTiles().add(mahjongTile);//加入到玩家手牌
         userService.save(user);
-        log.info("成功为玩家{}发牌{}", user.getName(), mahjongTile.getChineseName());
+        log.info("成功为玩家{}发牌{}，session {}，房间id{}", user.getName(), mahjongTile.getChineseName(), session.getId(), user.getRoom().getId());
 
         result.setStatus(true);
         result.setMessage("get tile");
@@ -133,7 +133,7 @@ public class GameService {
         }
         user.getThrownTiles().add(mahjongTile);//加入已出过的牌
         userService.save(user);
-        log.info("玩家{}成功出牌{}", user.getName(), mahjongTile.getChineseName());
+        log.info("玩家{}成功出牌{}，session {}，房间id{}", user.getName(), mahjongTile.getChineseName(), session.getId(), user.getRoom().getId());
 
         //广播
         //给房间里所有人发消息
@@ -176,6 +176,7 @@ public class GameService {
         }
         //可能是自摸胡牌,那么这个时候没有计时器
         if (user.getRoom().getTimerStart() == null) {
+            log.info("玩家{}自摸胡牌，session {}，房间id{}", user.getName(), session.getId(), user.getRoom().getId());
             processWin(user.getRoom(), user);
             return;
         }
@@ -185,10 +186,12 @@ public class GameService {
         tileRequest.setType(type);
         tileRequest.setUser(user);
         user.getRoom().getRequests().add(tileRequest);
+        log.info("玩家{}点炮胡牌，session {}，房间id{}", user.getName(), session.getId(), user.getRoom().getId());
 
         result.setStatus(true);
         result.setMessage(t + " request success");
         session.sendMessage(new TextMessage(result.toString()));
+
     }
 
     /**
@@ -240,6 +243,8 @@ public class GameService {
         //赢家index=0
         roomService.adjustUserIndex(room, winner);
         room.getPlayers().stream().forEach(p -> userService.resetUser(p));
+        log.info("房间id{}，结束游戏，胜者{}", room.getId(), winner.getName());
+
     }
 
     /**
@@ -289,6 +294,8 @@ public class GameService {
      * @throws Exception
      */
     public void gameStart(Room room) throws Exception {
+        log.info("房间id{}，游戏开始", room.getId());
+
         room.setPlaying(true);
         room.setIndex(0);
 
@@ -353,6 +360,7 @@ public class GameService {
             User user = list.get(0).getUser();
             processWin(room, user);
         } else if (index == -1) {//如果没有要抢，那么按照正常顺序开会时发牌
+            log.info("房间id{}，新一轮开始", room.getId());
             boolean b = isTie(room);
             if (b) {
                 processTie(room);
@@ -421,6 +429,7 @@ public class GameService {
         Collections.sort(list, (a, b) -> b.getType().getRank() - a.getType().getRank());
         //是不是胡牌
         if (list.get(0).getType() == Constants.RequestType.win) {
+            log.info("房间id{}，新一轮开始，有人点炮胡牌", room.getId());
             return -2;
         }
         //不是胡牌那么判断碰牌和吃牌和杠
@@ -489,6 +498,7 @@ public class GameService {
         map.put("type", type);
         map.put("tile", room.getLastTile().getStruct());
         result.setObject(objectMapper.writeValueAsString(map));
+        log.info("房间id{}，用户{}/{} ,{}", room.getId(), user.getName(), session.getId(), type);
 
         broadcastSpecificMessage(user.getRoom(), result.toString(), user.getId());
 

@@ -167,7 +167,7 @@ public class UserService {
             return;
         }
         Room room = user.getRoom();
-        if (Constants.roomMap.containsKey(room.getId())) {//不在房间里
+        if (!Constants.roomMap.containsKey(room.getId())) {//不在房间里
             result.setMessage("房间不存在");
             session.sendMessage(new TextMessage(result.toString()));
             return;

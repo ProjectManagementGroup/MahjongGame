@@ -147,4 +147,12 @@ public class Room {
         }
         return -1;
     }
+
+    public void updatePlayerIndex() {
+        int i = 0;
+        while (i < players.size()) {
+            players.get(i).setGameid(i);
+            i++;
+        }
+    }
 }

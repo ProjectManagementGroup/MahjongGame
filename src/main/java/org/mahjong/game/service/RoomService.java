@@ -248,7 +248,7 @@ public class RoomService {
         }
         room.getPlayers().add(user);
         user.setRoom(room);
-        user.setGameid(room.getPlayers().size());
+        room.updatePlayerIndex();
         userService.save(user);
 
 //        result.setStatus(true);
@@ -325,6 +325,7 @@ public class RoomService {
         room.setFriendly(true);
         user.setRoom(room);
         room.getPlayers().add(user);
+        user.setGameid(0);
 //        room.getPlayers().addAll(friends);
 
         //给被邀请的人发消息

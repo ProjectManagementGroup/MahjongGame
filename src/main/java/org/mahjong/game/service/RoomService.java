@@ -120,7 +120,7 @@ public class RoomService {
             map.put("name", u.getName());
             map.put("point", u.getPoint());
             map.put("ready", u.isReady());
-            map.put("index", u.getGameid());
+            map.put("gameid", u.getGameid());
 //            map.put("thrownTiles", u.getJsonThrownTileLists());
             list.add(map);
         }
@@ -325,7 +325,7 @@ public class RoomService {
 
         Room room = createRoom();
         room.setFriendly(true);
-        room.getPlayers().addAll(friends);
+//        room.getPlayers().addAll(friends);
 
         //给被邀请的人发消息
         //要把邀请人的信息和其他被邀请的人的消息都发送出去

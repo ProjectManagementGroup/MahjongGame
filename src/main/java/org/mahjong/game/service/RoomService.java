@@ -325,6 +325,8 @@ public class RoomService {
 
         Room room = createRoom();
         room.setFriendly(true);
+        user.setRoom(room);
+        room.getPlayers().add(user);
 //        room.getPlayers().addAll(friends);
 
         //给被邀请的人发消息

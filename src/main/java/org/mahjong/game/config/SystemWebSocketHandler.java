@@ -46,7 +46,10 @@ public class SystemWebSocketHandler implements WebSocketHandler {
 //        System.out.println("暂时还没有登陆！");//应该只有这一条会执行
 //        }
         log.info("session {} 连接成功", session.getId());
-        session.sendMessage(new TextMessage("success connect"));
+        JsonResult result = new JsonResult();
+        result.setStatus(true);
+        result.setMessage("success connect");
+        session.sendMessage(new TextMessage(result.toString()));
     }
 
 

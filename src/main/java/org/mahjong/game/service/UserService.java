@@ -2,6 +2,7 @@ package org.mahjong.game.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
+import org.mahjong.game.Constants;
 import org.mahjong.game.config.SystemWebSocketHandler;
 import org.mahjong.game.domain.Room;
 import org.mahjong.game.domain.User;
@@ -25,7 +26,6 @@ public class UserService {
 
     private static Logger log = LoggerFactory.getLogger(UserService.class);
 
-    public Map<String, User> allUsers = Maps.newLinkedHashMap();
 
     @Inject
     private UserRepository userRepository;
@@ -38,7 +38,7 @@ public class UserService {
 
     public void save(User user) {
         userRepository.save(user);
-        allUsers.put(user.getName(), user);
+        Constants.allUsers.put(user.getName(), user);
     }
 
     public User getUserFromSession(WebSocketSession session) throws Exception {
@@ -49,20 +49,20 @@ public class UserService {
             session.sendMessage(new TextMessage(result.toString()));
             return null;
         }
-        if (!allUsers.containsKey(username)) {
+        if (!Constants.allUsers.containsKey(username)) {
             result.setMessage("用户不存在");
             session.sendMessage(new TextMessage(result.toString()));
             return null;
         }
-        User user = allUsers.get(username);
+        User user = Constants.allUsers.get(username);
         return user;
     }
 
     public User getUserFromUsername(String username) {
-        if (!allUsers.containsKey(username)) {
+        if (!Constants.allUsers.containsKey(username)) {
             return null;
         }
-        User user = allUsers.get(username);
+        User user = Constants.allUsers.get(username);
         return user;
     }
 
@@ -106,7 +106,7 @@ public class UserService {
             }
         }
         User user = _user.get();
-        allUsers.put(user.getName(), user);
+        Constants.allUsers.put(user.getName(), user);
 
         Map<String, Object> map = Maps.newLinkedHashMap();
         map.put("name", username);
@@ -167,7 +167,7 @@ public class UserService {
             return;
         }
         Room room = user.getRoom();
-        if (RoomService.roomMap.containsKey(room.getId())) {//不在房间里
+        if (Constants.roomMap.containsKey(room.getId())) {//不在房间里
             result.setMessage("房间不存在");
             session.sendMessage(new TextMessage(result.toString()));
             return;

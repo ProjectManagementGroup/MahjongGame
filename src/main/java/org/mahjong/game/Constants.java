@@ -4,6 +4,8 @@ package org.mahjong.game;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.mahjong.game.domain.Room;
+import org.mahjong.game.domain.User;
 
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,11 @@ public class Constants {
     public static final int PERIOD = 5;//秒，为定时器时长
 
     private static ObjectMapper objectMapper = new ObjectMapper();//用于网络发包
+
+    public static Map<Long, Room> roomMap = Maps.newLinkedHashMap();
+
+    public static Map<String, User> allUsers = Maps.newLinkedHashMap();
+
 
 
     /**

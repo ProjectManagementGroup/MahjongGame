@@ -36,8 +36,6 @@ public class RoomService {
      * 随机组队且人数未满的房间，不排序，每次只寻找第一个
      * 如果人数满了，那么移动到playingRoomList集合里面
      */
-    public static Map<Long, Room> roomMap = Maps.newLinkedHashMap();
-
     private static ObjectMapper objectMapper = new ObjectMapper();//用于网络发包
 
 
@@ -102,7 +100,7 @@ public class RoomService {
             session.sendMessage(new TextMessage(result.toString()));
             return;
         }
-        if (!roomMap.containsKey(user.getRoom().getId())) {
+        if (!Constants.roomMap.containsKey(user.getRoom().getId())) {
             result.setMessage("房间不存在");
             session.sendMessage(new TextMessage(result.toString()));
             return;
@@ -166,7 +164,7 @@ public class RoomService {
 
         //找到第一个*人数未满的非好友*房间并加入
         Room room = null;
-        for (Map.Entry<Long, Room> entry : roomMap.entrySet()) {
+        for (Map.Entry<Long, Room> entry : Constants.roomMap.entrySet()) {
             if (entry.getValue().getPlayers().size() < 4 && !entry.getValue().isFriendly()) {
                 room = entry.getValue();
                 break;
@@ -179,7 +177,7 @@ public class RoomService {
             user.setRoom(room);
             user.setGameid(0);//自己就是第一个
             userService.save(user);
-            roomMap.put(room.getId(), room);
+            Constants.roomMap.put(room.getId(), room);
             log.info("玩家{}创建随机房间{}", user.getName(), room.getId());
             result.setStatus(true);
             result.setMessage("join random success");
@@ -231,13 +229,13 @@ public class RoomService {
             session.sendMessage(new TextMessage(result.toString()));
             return;
         }
-        if (!roomMap.containsKey(Long.parseLong(payloadArray[1]))) {
+        if (!Constants.roomMap.containsKey(Long.parseLong(payloadArray[1]))) {
             log.error("房间{}不存在", payloadArray[1]);
             result.setMessage("房间不存在");
             session.sendMessage(new TextMessage(result.toString()));
             return;
         }
-        Room room = roomMap.get(Long.parseLong(payloadArray[1]));
+        Room room = Constants.roomMap.get(Long.parseLong(payloadArray[1]));
         if (!room.isFriendly()) {
             result.setMessage("不是好友房间");
             session.sendMessage(new TextMessage(result.toString()));
@@ -359,7 +357,7 @@ public class RoomService {
         session.sendMessage(new TextMessage(result.toString()));
 
         log.info("用户{}创建了好友房间，session {}，房间id{}，邀请三位好友:{}/{}、{}/{}、{}/{}", user.getName(), session.getId(), room.getId(), friends.get(0).getName(), sessions.get(0).getId(), friends.get(1).getName(), sessions.get(1).getId(), friends.get(2).getName(), sessions.get(2).getId());
-        roomMap.put(room.getId(), room);
+        Constants.roomMap.put(room.getId(), room);
     }
 
     public void exit(WebSocketSession session) throws Exception {
@@ -388,7 +386,7 @@ public class RoomService {
         result.setObject("玩家" + user.getName() + "退出游戏房间解散");
 
         //这个房间就不存在了
-        roomMap.remove(user.getRoom().getId());
+        Constants.roomMap.remove(user.getRoom().getId());
         for (User u : user.getRoom().getPlayers()) {
             u.setGameid(-1);
             u.setRoom(null);

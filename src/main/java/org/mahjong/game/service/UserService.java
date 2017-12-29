@@ -232,12 +232,12 @@ public class UserService {
         }
         WebSocketSession friendSession = SystemWebSocketHandler.sessionsMap.get(payloadArray[1]);
 
-        //告诉申请者成功
-        result.setStatus(true);
-        result.setMessage("friendAccept");
-        //被申请者
-        result.setObject(user.getName());
-        friendSession.sendMessage(new TextMessage(result.toString()));
+//        //告诉申请者成功
+//        result.setStatus(true);
+//        result.setMessage("friendAccept");
+//        //被申请者
+//        result.setObject(user.getName());
+//        friendSession.sendMessage(new TextMessage(result.toString()));
 
         //告诉被申请者成功
         result.setStatus(true);

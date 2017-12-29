@@ -237,6 +237,11 @@ public class GameService {
     @Async
     public synchronized void win(String[] payloadArray, WebSocketSession session, String t) throws Exception {
         JsonResult result = new JsonResult();
+        if (payloadArray.length != 3) {
+            result.setMessage("请求信息错误");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
         User user = userService.getUserFromSession(session);
         if (user == null) {
             result.setMessage("用户信息错误");

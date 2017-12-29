@@ -470,6 +470,12 @@ public class GameService {
             session.sendMessage(new TextMessage(result.toString()));
             return;
         }
+        //判断是否在吃碰牌时间内
+        if (user.getRoom().getTimerStart() == null) {
+            result.setMessage("不在吃碰牌时间内");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
         Constants.RequestType type = Constants.RequestType.valueOf(t);
         TileRequest tileRequest = new TileRequest();
         tileRequest.setType(type);

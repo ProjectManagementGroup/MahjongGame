@@ -294,7 +294,16 @@ public class GameService {
         resultMap.put("winnerName", winner.getName());
         resultMap.put("winnerIndex", winner.getGameid());
         resultMap.put("winTile", tile.getStruct());
-        resultMap.put("ownTiles", winner.getJsonOwnTileLists());
+
+        //判断是自摸胡牌还是点炮胡牌
+        if (room.getTimerStart() == null) {
+            //自摸胡牌
+            winner.getOwnTiles().remove(tile);
+            resultMap.put("ownTiles", winner.getJsonOwnTileLists());
+        } else {
+            //点炮胡牌
+            resultMap.put("ownTiles", winner.getJsonOwnTileLists());
+        }
 //        List<Object> list = Lists.newLinkedList();
 //        for (User u : room.getPlayers()) {
 //            Map<String, Object> map = Maps.newLinkedHashMap();

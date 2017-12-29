@@ -8,6 +8,7 @@ import com.google.common.collect.Sets;
 import org.joda.time.DateTime;
 import org.mahjong.game.Constants;
 import org.mahjong.game.config.SystemWebSocketHandler;
+import org.mahjong.game.domain.FriendRelation;
 import org.mahjong.game.domain.Room;
 import org.mahjong.game.domain.TileRequest;
 import org.mahjong.game.domain.User;
@@ -86,7 +87,7 @@ public class GameService {
             if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getName())) {//下线的人暂时不管
                 continue;
             }
-            //不给出牌人发消息
+            //不给发牌人发消息
             if (u.getId() == user.getId()) {
                 continue;
             }
@@ -581,4 +582,116 @@ public class GameService {
             socketSession.sendMessage(new TextMessage(json));
         }
     }
+
+
+    /**
+     * 用户请求加好友
+     *
+     * @param payloadArray
+     * @param session
+     * @throws Exception
+     */
+    public void sendFriendInvitation(String[] payloadArray, WebSocketSession session) throws Exception {
+        JsonResult result = new JsonResult();
+        if (payloadArray.length != 2) {
+            result.setMessage("请求信息错误");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        User user = userService.getUserFromSession(session);
+        if (user == null) {
+            result.setMessage("用户信息错误，无法加入申请好友");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        //就不判断是不是在房间里了
+
+        //邀请好友的session
+        User friend = userService.getUserFromUsername(payloadArray[1]);
+        if (friend == null) {
+            result.setMessage("好友信息错误，无法加入申请好友");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        //就不判断是不是在房间里了
+        if (!SystemWebSocketHandler.sessionsMap.containsKey(payloadArray[1])) {
+            log.error("好友{}不在线，无法加入申请好友", payloadArray[1]);
+            result.setMessage("好友不在线，无法加入申请好友");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        WebSocketSession friendSession = SystemWebSocketHandler.sessionsMap.get(payloadArray[1]);
+
+        //给被邀请的人发消息
+        //要把邀请人的信息和其他被邀请的人的消息都发送出去
+        result.setStatus(true);
+        result.setMessage("friendInvitation");
+        //邀请者
+        result.setObject(user.getName());
+        friendSession.sendMessage(new TextMessage(result.toString()));
+
+        //不给申请人发消息了
+
+        log.info("用户{}申请好友，session {}，申请好友{}/{}", user.getName(), session.getId(), friend.getName(), friendSession.getId());
+
+    }
+
+    /**
+     * 有个玩家受邀请加入好友房间游戏
+     */
+    public synchronized void friendAccept(String[] payloadArray, WebSocketSession session) throws Exception {
+        JsonResult result = new JsonResult();
+        if (payloadArray.length != 2) {
+            result.setMessage("请求信息错误");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        User user = userService.getUserFromSession(session);
+        if (user == null) {
+            result.setMessage("用户信息错误，无法加入申请好友");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        //就不判断是不是在房间里了
+
+        //邀请好友的session
+        User friend = userService.getUserFromUsername(payloadArray[1]);
+        if (friend == null) {
+            result.setMessage("好友信息错误，无法加入申请好友");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        //就不判断是不是在房间里了
+        if (!SystemWebSocketHandler.sessionsMap.containsKey(payloadArray[1])) {
+            log.error("好友{}不在线，无法加入申请好友", payloadArray[1]);
+            result.setMessage("好友不在线，无法加入申请好友");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        WebSocketSession friendSession = SystemWebSocketHandler.sessionsMap.get(payloadArray[1]);
+
+        //告诉申请者成功
+        result.setStatus(true);
+        result.setMessage("friendAccept");
+        //被申请者
+        result.setObject(user.getName());
+        friendSession.sendMessage(new TextMessage(result.toString()));
+
+        //告诉被申请者成功
+        result.setStatus(true);
+        result.setMessage("friendAccept");
+        //被申请者
+        result.setObject(friend.getName());
+        session.sendMessage(new TextMessage(result.toString()));
+
+        //在数据库里面加一条数据
+        FriendRelation relation = new FriendRelation();
+        relation.setUser1(user);
+        relation.setUser2(friend);
+
+
+        log.info("用户{}/{} 接受用户 {}/{} 的好友申请", user.getName(), session.getId(), friend.getName(), friendSession.getId());
+
+    }
+
 }

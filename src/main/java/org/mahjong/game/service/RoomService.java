@@ -363,6 +363,12 @@ public class RoomService {
         Constants.roomMap.put(room.getId(), room);
     }
 
+    /**
+     * 用户退出房间
+     *
+     * @param session
+     * @throws Exception
+     */
     public void exit(WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
         User user = userService.getUserFromSession(session);
@@ -409,6 +415,47 @@ public class RoomService {
             room.getPlayers().get(i).setGameid(i);
             userService.save(room.getPlayers().get(i));
         }
+    }
+
+    /**
+     * 用户登出
+     * 如果用户在房间里，那么直接房间解散
+     * 登出之后就不给用户发消息了
+     * session也直接remove掉
+     *
+     * @param session
+     * @throws Exception
+     */
+    public void logout(WebSocketSession session) throws Exception {
+        JsonResult result = new JsonResult();
+        User user = userService.getUserFromSession(session);
+        if (user == null) {
+            result.setMessage("用户信息错误");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        if (user.getRoom() != null) {
+            Room room = user.getRoom();
+            if (!Constants.roomMap.containsKey(user.getRoom().getId())) {
+                //房间如果不存在，说明可能之前有人登出或者退出了房间，那么就不管
+                return;
+            }
+            Constants.roomMap.remove(room.getId());
+            //房间解散
+            for (User u : user.getRoom().getPlayers()) {
+                u.setGameid(-1);
+                u.setRoom(null);
+                u.setOwnTiles(Lists.newLinkedList());
+                u.setThrownTiles(Lists.newLinkedList());
+                u.setReady(false);
+                userService.save(u);
+            }
+            return;
+        }
+        //去掉session
+        SystemWebSocketHandler.sessionsMap.remove(user.getName());
+        session.close();//关session
+        //但是user仍然留在内存里面
     }
 
     public static void main(String args[]) throws Exception {

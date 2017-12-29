@@ -169,6 +169,36 @@ public class SystemWebSocketHandler implements WebSocketHandler {
             case "speak":
                 gameService.speak(payloadArray, session);
                 break;
+            /**
+             * 登出
+             * logout|
+             */
+            case "logout":
+                roomService.logout(session);
+                break;
+            /**
+             * 好友请求
+             * friendInvitation|friendName
+             * friendName是朋友的用户名
+             */
+            case "friendInvitation":
+                gameService.sendFriendInvitation(payloadArray, session);
+                break;
+            /**
+             * 接受好友请求
+             * friendAccept|friendName
+             * friendName是发送好友请求的用户的用户名
+             */
+            case "friendAccept":
+                gameService.friendAccept(payloadArray, session);
+                break;
+            /**
+             * 提供所有好友
+             * friendList|
+             */
+            case "friendList":
+                gameService.friendAccept(payloadArray, session);
+                break;
             default:
                 log.error("请求消息错误");
                 session.sendMessage(new TextMessage(new JsonResult("消息格式错误").toString()));

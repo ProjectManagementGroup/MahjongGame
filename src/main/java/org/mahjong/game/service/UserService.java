@@ -97,13 +97,10 @@ public class UserService {
         jsonResult.setMessage("login");
 
         //TODO:可能需要一个重复登录的验证
-        //检查所有session
-        for (WebSocketSession wss : SystemWebSocketHandler.sessions) {
-            if (wss.getAttributes().containsKey("username") && wss.getAttributes().get("username").toString().equals(username)) {
-                jsonResult.setMessage("不允许重复登录！！");
-                session.sendMessage(new TextMessage(jsonResult.toString()));
-                return;
-            }
+        if (SystemWebSocketHandler.sessionsMap.containsKey(username)) {
+            jsonResult.setMessage("不允许重复登录！！");
+            session.sendMessage(new TextMessage(jsonResult.toString()));
+            return;
         }
         User user = _user.get();
         Constants.allUsers.put(user.getName(), user);

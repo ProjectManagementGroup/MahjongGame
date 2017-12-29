@@ -143,10 +143,10 @@ public class SystemWebSocketHandler implements WebSocketHandler {
                 break;
             /**
              * 用户胡牌
-             * win|
+             * win|typeid|value
              */
             case "win":
-                gameService.win(session, "win");
+                gameService.win(payloadArray, session, "win");
                 break;
             /**
              * 碰

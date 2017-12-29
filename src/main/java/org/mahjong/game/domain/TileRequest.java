@@ -24,6 +24,11 @@ public class TileRequest {
      */
     private Constants.MahjongTile tile2;
 
+    /**
+     * 碰的牌或者吃的牌或者赢的牌都是什么
+     */
+    private Constants.MahjongTile tile0;
+
     public User getUser() {
         return user;
     }
@@ -54,5 +59,13 @@ public class TileRequest {
 
     public void setTile2(Constants.MahjongTile tile2) {
         this.tile2 = tile2;
+    }
+
+    public Constants.MahjongTile getTile0() {
+        return tile0;
+    }
+
+    public void setTile0(Constants.MahjongTile tile0) {
+        this.tile0 = tile0;
     }
 }

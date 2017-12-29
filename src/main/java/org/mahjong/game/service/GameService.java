@@ -223,7 +223,7 @@ public class GameService {
     /**
      * 胡牌请求：前台判断，如果有人胡了，就加入队列
      */
-    public void win(WebSocketSession session, String t) throws Exception {
+    public void win(String[] payloadArray, WebSocketSession session, String t) throws Exception {
         JsonResult result = new JsonResult();
         User user = userService.getUserFromSession(session);
         if (user == null) {
@@ -236,10 +236,12 @@ public class GameService {
             session.sendMessage(new TextMessage(result.toString()));
             return;
         }
+        Constants.MahjongTile tile = Constants.MahjongTile.getTileByTypeAndNumber(Constants.MahjongType.getTypeById(Integer.parseInt(payloadArray[1])), Integer.parseInt(payloadArray[2]));
+
         //可能是自摸胡牌,那么这个时候没有计时器
         if (user.getRoom().getTimerStart() == null) {
             log.info("玩家{}自摸胡牌，session {}，房间id{}", user.getName(), session.getId(), user.getRoom().getId());
-            processWin(user.getRoom(), user);
+            processWin(tile, user.getRoom(), user);
             return;
         }
         //点炮胡牌
@@ -247,6 +249,7 @@ public class GameService {
         TileRequest tileRequest = new TileRequest();
         tileRequest.setType(type);
         tileRequest.setUser(user);
+        tileRequest.setTile0(tile);//胡的牌是什么
         user.getRoom().getRequests().add(tileRequest);
         log.info("玩家{}点炮胡牌，session {}，房间id{}", user.getName(), session.getId(), user.getRoom().getId());
 
@@ -259,7 +262,7 @@ public class GameService {
     /**
      * 胡牌
      */
-    public void processWin(Room room, User winner) throws Exception {
+    public void processWin(Constants.MahjongTile tile, Room room, User winner) throws Exception {
 
         //广播胜利消息
         JsonResult result = new JsonResult();
@@ -271,25 +274,25 @@ public class GameService {
         //加入胜利玩家信息
         resultMap.put("winnerName", winner.getName());
         resultMap.put("winnerIndex", winner.getGameid());
-
-        List<Object> list = Lists.newLinkedList();
-        for (User u : room.getPlayers()) {
-            Map<String, Object> map = Maps.newLinkedHashMap();
-            map.put("name", u.getName());
-            if (u.getId() == winner.getId()) {
-                u.setPoint(u.getPoint() + 50);
-            } else {
-                u.setPoint(u.getPoint() - 50);
-            }
-            map.put("point", u.getPoint());
-            map.put("thrownTiles", u.getJsonThrownTileLists());
-            map.put("ownTiles", u.getJsonOwnTileLists());
-            map.put("gameid", u.getGameid());
-            list.add(map);
-        }
+        resultMap.put("winTile", tile.getStruct());
+        resultMap.put("ownTiles", winner.getJsonOwnTileLists());
+//        List<Object> list = Lists.newLinkedList();
+//        for (User u : room.getPlayers()) {
+//            Map<String, Object> map = Maps.newLinkedHashMap();
+//            map.put("name", u.getName());
+//            if (u.getId() == winner.getId()) {
+//                u.setPoint(u.getPoint() + 50);
+//            } else {
+//                u.setPoint(u.getPoint() - 50);
+//            }
+//            map.put("point", u.getPoint());
+//            map.put("thrownTiles", u.getJsonThrownTileLists());
+//            map.put("ownTiles", u.getJsonOwnTileLists());
+//            map.put("gameid", u.getGameid());
+//            list.add(map);
+//        }
 
         //加入所有玩家所有信息
-        resultMap.put("all", list);
         result.setObject(objectMapper.writeValueAsString(resultMap));
 
         for (User u : room.getPlayers()) {
@@ -420,7 +423,7 @@ public class GameService {
         if (index == -2) {//说明有人胡了
             List<TileRequest> list = room.getRequests();
             User user = list.get(0).getUser();
-            processWin(room, user);
+            processWin(list.get(0).getTile0(), room, user);
         } else if (index == -1) {//如果没有要抢，那么按照正常顺序开会时发牌
             log.info("房间id{}，新一轮开始", room.getId());
             boolean b = isTie(room);

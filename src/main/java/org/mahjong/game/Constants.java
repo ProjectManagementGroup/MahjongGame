@@ -34,7 +34,6 @@ public class Constants {
     public static Map<String, User> allUsers = Maps.newLinkedHashMap();
 
 
-
     /**
      * 碰/吃
      */
@@ -83,6 +82,15 @@ public class Constants {
         MahjongType(String chineseName, int typeid) {
             this.chineseName = chineseName;
             this.typeid = typeid;
+        }
+
+        public static MahjongType getTypeById(int id) {
+            for (MahjongType type : MahjongType.values()) {
+                if (type.getTypeid() == id) {
+                    return type;
+                }
+            }
+            return null;
         }
 
         public String getChineseName() {

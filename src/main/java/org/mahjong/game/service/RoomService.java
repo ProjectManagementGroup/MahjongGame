@@ -21,10 +21,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Transactional
@@ -667,6 +664,16 @@ public class RoomService {
 //        String value = "2";
 //        Constants.MahjongTile mahjongTile = Constants.MahjongTile.getTileByTypeAndNumber(Constants.MahjongType.valueOf(type), Integer.parseInt(value));
 //        System.out.println(mahjongTile);
+
+        Map<String, Object> resultMap = Maps.newLinkedHashMap();
+
+        //加入胜利玩家信息
+        resultMap.put("winnerName", "zyw");
+        resultMap.put("winnerIndex", 0);
+        resultMap.put("winTile", Constants.MahjongTile.sixBamboo.getStruct());
+        resultMap.put("ownTiles", Arrays.asList(Constants.MahjongTile.sixBamboo.getStruct(), Constants.MahjongTile.oneBamboo.getStruct()));
+
+        System.out.println(objectMapper.writeValueAsString(resultMap));
     }
 
     public void test(String[] payloadArray, WebSocketSession session) throws Exception {

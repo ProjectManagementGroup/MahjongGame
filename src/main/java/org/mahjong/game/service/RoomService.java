@@ -693,11 +693,16 @@ public class RoomService {
 //
 //        System.out.println(objectMapper.writeValueAsString(resultMap));
 
-        List<String> list = Arrays.asList("wangying", "anyi", "zyw");
         JsonResult result = new JsonResult();
         result.setStatus(true);
-        result.setMessage("friendList");
-        result.setObject(objectMapper.writeValueAsString(list));
+        result.setMessage("login");
+        Map<String, Object> map = Maps.newLinkedHashMap();
+        map.put("name", "zyw");
+        map.put("point", 100);
+        //把自己的好友列表也给出去
+        map.put("friendList", Arrays.asList("zyw","anyi","wn"));
+        result.setObject(objectMapper.writeValueAsString(map));
+
         System.out.println(result);
     }
 

@@ -125,6 +125,10 @@ public class UserService {
         Map<String, Object> map = Maps.newLinkedHashMap();
         map.put("name", username);
         map.put("point", user.getPoint());
+        //把自己的好友列表也给出去
+        List<String> friendList = friendRelationRepository.findAllByUseId1(user.getId());
+        friendList.addAll(friendRelationRepository.findAllByUseId2(user.getId()));
+        map.put("friendList", friendList);
         jsonResult.setObject(objectMapper.writeValueAsString(map));
         session.sendMessage(new TextMessage(jsonResult.toString()));
 
@@ -240,7 +244,7 @@ public class UserService {
 
         //告诉被申请者成功,推送好友列表
         result.setStatus(true);
-        result.setMessage("friendList");
+        result.setMessage("friendAccept");
         //被申请者
         List<String> friendList = friendRelationRepository.findAllByUseId1(friend.getId());
         friendList.addAll(friendRelationRepository.findAllByUseId2(friend.getId()));
@@ -249,7 +253,7 @@ public class UserService {
 
         //告诉申请者成功,推送好友列表
         result.setStatus(true);
-        result.setMessage("friendList");
+        result.setMessage("friendAccept");
         //申请者
         friendList = friendRelationRepository.findAllByUseId1(user.getId());
         friendList.addAll(friendRelationRepository.findAllByUseId2(user.getId()));

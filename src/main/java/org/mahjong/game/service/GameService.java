@@ -474,6 +474,7 @@ public class GameService {
         TileRequest tileRequest = new TileRequest();
         tileRequest.setType(type);
         tileRequest.setUser(user);
+        tileRequest.setTile0(user.getRoom().getLastTile());
 
         //设置另外两张牌都是什么
         if (type == Constants.RequestType.eat) {
@@ -481,7 +482,7 @@ public class GameService {
             int number2 = Integer.parseInt(payloadArray[2]);
             tileRequest.setTile1(Constants.MahjongTile.getTileByTypeAndNumber(user.getRoom().getLastTile().getType(), number1));
             tileRequest.setTile2(Constants.MahjongTile.getTileByTypeAndNumber(user.getRoom().getLastTile().getType(), number2));
-        } else if (type == Constants.RequestType.eat) {
+        } else if (type == Constants.RequestType.bump) {
             tileRequest.setTile1(user.getRoom().getLastTile());
             tileRequest.setTile2(user.getRoom().getLastTile());
         }
@@ -490,6 +491,8 @@ public class GameService {
         result.setStatus(true);
         result.setMessage(t + " request success");
         session.sendMessage(new TextMessage(result.toString()));
+
+        log.info("用户{}，session {} 发送了 <{}> 的请求, 最后一张牌是 {}, 其余两张牌是 {} 和 {}", user.getName(), session.getId(), t, tileRequest.getTile0(), tileRequest.getTile1(), tileRequest.getTile2());
     }
 
     private int processBeforeNewRound(Room room) throws Exception {

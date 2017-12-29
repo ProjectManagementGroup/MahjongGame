@@ -463,6 +463,8 @@ public class GameService {
             allocateMahjongTile(session);
         } else {
             //有人要碰牌或者吃牌或者杠
+            //恢复room的请求
+            room.setRequests(Lists.newLinkedList());//清空
             room.setIndex(index);
             //如果是杠，那么已经给玩家发了牌；如果是碰牌或者吃牌，那么也相当于也给玩家发了牌。所以无论如何，下面就等待用户出牌
         }

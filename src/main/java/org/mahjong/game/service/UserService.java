@@ -87,9 +87,9 @@ public class UserService {
     public synchronized void resetUser(User user) {
         user.setReady(false);
 //        user.setRoom(null);//仍然停留在原房间,index也不改变
-        user.setThrownTiles(null);
-        user.setOwnTiles(null);
-        user.setGameid(0);
+        user.setThrownTiles(Lists.newLinkedList());
+        user.setOwnTiles(Lists.newLinkedList());
+        user.setGameid(-1);
         save(user);
     }
 
@@ -232,25 +232,29 @@ public class UserService {
         }
         WebSocketSession friendSession = SystemWebSocketHandler.sessionsMap.get(payloadArray[1]);
 
-//        //告诉申请者成功
-//        result.setStatus(true);
-//        result.setMessage("friendAccept");
-//        //被申请者
-//        result.setObject(user.getName());
-//        friendSession.sendMessage(new TextMessage(result.toString()));
-
-        //告诉被申请者成功
-        result.setStatus(true);
-        result.setMessage("friendAccept");
-        //被申请者
-        result.setObject(friend.getName());
-        session.sendMessage(new TextMessage(result.toString()));
-
         //在数据库里面加一条数据
         FriendRelation relation = new FriendRelation();
         relation.setUser1(user);
         relation.setUser2(friend);
         friendRelationRepository.save(relation);
+
+        //告诉被申请者成功,推送好友列表
+        result.setStatus(true);
+        result.setMessage("friendList");
+        //被申请者
+        List<String> friendList = friendRelationRepository.findAllByUseId1(friend.getId());
+        friendList.addAll(friendRelationRepository.findAllByUseId2(friend.getId()));
+        result.setObject(objectMapper.writeValueAsString(friendList));
+        friendSession.sendMessage(new TextMessage(result.toString()));
+
+        //告诉申请者成功,推送好友列表
+        result.setStatus(true);
+        result.setMessage("friendList");
+        //申请者
+        friendList = friendRelationRepository.findAllByUseId1(user.getId());
+        friendList.addAll(friendRelationRepository.findAllByUseId2(user.getId()));
+        result.setObject(objectMapper.writeValueAsString(friendList));
+        session.sendMessage(new TextMessage(result.toString()));
 
         log.info("用户{}/{} 接受用户 {}/{} 的好友申请", user.getName(), session.getId(), friend.getName(), friendSession.getId());
 
@@ -273,20 +277,19 @@ public class UserService {
             return;
         }
         //从数据库里查出来
-        List<User> friendList = friendRelationRepository.findAllByUseId1(user.getId());
+        List<String> friendList = friendRelationRepository.findAllByUseId1(user.getId());
         friendList.addAll(friendRelationRepository.findAllByUseId2(user.getId()));
 
-        List<Object> list = Lists.newLinkedList();
         //下面判断每个好友是否在线
-        for (User u : friendList) {
-            Map<String, Object> map = Maps.newLinkedHashMap();
-            map.put("name", u.getName());
-            map.put("online", SystemWebSocketHandler.sessionsMap.containsKey(u.getName()));
-            list.add(map);
-        }
+//        for (User u : friendList) {
+//            Map<String, Object> map = Maps.newLinkedHashMap();
+//            map.put("name", u.getName());
+//            map.put("online", SystemWebSocketHandler.sessionsMap.containsKey(u.getName()));
+//            list.add(map);
+//        }
         result.setStatus(true);
         result.setMessage("friendList");
-        result.setObject(objectMapper.writeValueAsString(list));
+        result.setObject(objectMapper.writeValueAsString(friendList));
 
         session.sendMessage(new TextMessage(result.toString()));
     }

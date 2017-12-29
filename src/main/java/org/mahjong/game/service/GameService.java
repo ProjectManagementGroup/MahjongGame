@@ -334,8 +334,8 @@ public class GameService {
         //恢复房间和玩家的状态
         roomService.resetRoom(room);
         //赢家index=0
-        roomService.adjustUserIndex(room, winner);
         room.getPlayers().stream().forEach(p -> userService.resetUser(p));
+        roomService.adjustUserIndex(room, winner);
         log.info("房间id{}，结束游戏，胜者{}", room.getId(), winner.getName());
 
     }

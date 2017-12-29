@@ -683,15 +683,22 @@ public class RoomService {
 //        Constants.MahjongTile mahjongTile = Constants.MahjongTile.getTileByTypeAndNumber(Constants.MahjongType.valueOf(type), Integer.parseInt(value));
 //        System.out.println(mahjongTile);
 
-        Map<String, Object> resultMap = Maps.newLinkedHashMap();
+//        Map<String, Object> resultMap = Maps.newLinkedHashMap();
+//
+//        //加入胜利玩家信息
+//        resultMap.put("winnerName", "zyw");
+//        resultMap.put("winnerIndex", 0);
+//        resultMap.put("winTile", Constants.MahjongTile.sixBamboo.getStruct());
+//        resultMap.put("ownTiles", Arrays.asList(Constants.MahjongTile.sixBamboo.getStruct(), Constants.MahjongTile.oneBamboo.getStruct()));
+//
+//        System.out.println(objectMapper.writeValueAsString(resultMap));
 
-        //加入胜利玩家信息
-        resultMap.put("winnerName", "zyw");
-        resultMap.put("winnerIndex", 0);
-        resultMap.put("winTile", Constants.MahjongTile.sixBamboo.getStruct());
-        resultMap.put("ownTiles", Arrays.asList(Constants.MahjongTile.sixBamboo.getStruct(), Constants.MahjongTile.oneBamboo.getStruct()));
-
-        System.out.println(objectMapper.writeValueAsString(resultMap));
+        List<String> list = Arrays.asList("wangying", "anyi", "zyw");
+        JsonResult result = new JsonResult();
+        result.setStatus(true);
+        result.setMessage("friendList");
+        result.setObject(objectMapper.writeValueAsString(list));
+        System.out.println(result);
     }
 
     public void test(String[] payloadArray, WebSocketSession session) throws Exception {

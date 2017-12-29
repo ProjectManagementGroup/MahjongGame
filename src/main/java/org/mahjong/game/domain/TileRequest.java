@@ -14,6 +14,16 @@ public class TileRequest {
      */
     private Constants.RequestType type;
 
+    /**
+     * 两位两张牌都是什么
+     */
+    private Constants.MahjongTile tile1;
+
+    /**
+     * 两位两张牌都是什么
+     */
+    private Constants.MahjongTile tile2;
+
     public User getUser() {
         return user;
     }
@@ -28,5 +38,21 @@ public class TileRequest {
 
     public void setType(Constants.RequestType type) {
         this.type = type;
+    }
+
+    public Constants.MahjongTile getTile1() {
+        return tile1;
+    }
+
+    public void setTile1(Constants.MahjongTile tile1) {
+        this.tile1 = tile1;
+    }
+
+    public Constants.MahjongTile getTile2() {
+        return tile2;
+    }
+
+    public void setTile2(Constants.MahjongTile tile2) {
+        this.tile2 = tile2;
     }
 }

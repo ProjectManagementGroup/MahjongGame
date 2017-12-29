@@ -1,12 +1,15 @@
 package org.mahjong.game.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.mahjong.game.Constants;
 import org.mahjong.game.config.SystemWebSocketHandler;
+import org.mahjong.game.domain.FriendRelation;
 import org.mahjong.game.domain.Room;
 import org.mahjong.game.domain.User;
 import org.mahjong.game.dtos.JsonResult;
+import org.mahjong.game.repository.FriendRelationRepository;
 import org.mahjong.game.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,6 +36,9 @@ public class UserService {
 
     @Inject
     private RoomService roomService;
+
+    @Inject
+    private FriendRelationRepository friendRelationRepository;
 
     private static ObjectMapper objectMapper = new ObjectMapper();//用于网络发包
 
@@ -116,6 +123,156 @@ public class UserService {
         SystemWebSocketHandler.sessionsMap.put(username, session);//key是userName
         log.info("用户{}登陆成功, 分配了session {}", username, session.getId());
 
+    }
+
+    /**
+     * 用户请求加好友
+     * 如果已经是好友，那么直接返回
+     *
+     * @param payloadArray
+     * @param session
+     * @throws Exception
+     */
+    public void sendFriendInvitation(String[] payloadArray, WebSocketSession session) throws Exception {
+        JsonResult result = new JsonResult();
+        if (payloadArray.length != 2) {
+            result.setMessage("请求信息错误");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        User user = getUserFromSession(session);
+        if (user == null) {
+            result.setMessage("用户信息错误，无法加入申请好友");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        //就不判断是不是在房间里了
+
+        //邀请好友的session
+        User friend = getUserFromUsername(payloadArray[1]);
+        if (friend == null) {
+            result.setMessage("好友信息错误，无法加入申请好友");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        Long id = friendRelationRepository.findRelationByUser1AndUser2(user.getId(), friend.getId());
+        if (id != null) {
+            result.setMessage("二人已经是好友");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        //就不判断是不是在房间里了
+        if (!SystemWebSocketHandler.sessionsMap.containsKey(payloadArray[1])) {
+            log.error("好友{}不在线，无法加入申请好友", payloadArray[1]);
+            result.setMessage("好友不在线，无法加入申请好友");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        WebSocketSession friendSession = SystemWebSocketHandler.sessionsMap.get(payloadArray[1]);
+
+        //给被邀请的人发消息
+        //要把邀请人的信息和其他被邀请的人的消息都发送出去
+        result.setStatus(true);
+        result.setMessage("friendInvitation");
+        //邀请者
+        result.setObject(user.getName());
+        friendSession.sendMessage(new TextMessage(result.toString()));
+
+        //不给申请人发消息了
+
+        log.info("用户{}申请好友，session {}，申请好友{}/{}", user.getName(), session.getId(), friend.getName(), friendSession.getId());
+
+    }
+
+    /**
+     * 接受好友请求
+     */
+    public synchronized void friendAccept(String[] payloadArray, WebSocketSession session) throws Exception {
+        JsonResult result = new JsonResult();
+        if (payloadArray.length != 2) {
+            result.setMessage("请求信息错误");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        User user = getUserFromSession(session);
+        if (user == null) {
+            result.setMessage("用户信息错误，无法加入申请好友");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        //就不判断是不是在房间里了
+
+        //邀请好友的session
+        User friend = getUserFromUsername(payloadArray[1]);
+        if (friend == null) {
+            result.setMessage("好友信息错误，无法加入申请好友");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        //就不判断是不是在房间里了
+        if (!SystemWebSocketHandler.sessionsMap.containsKey(payloadArray[1])) {
+            log.error("好友{}不在线，无法加入申请好友", payloadArray[1]);
+            result.setMessage("好友不在线，无法加入申请好友");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        WebSocketSession friendSession = SystemWebSocketHandler.sessionsMap.get(payloadArray[1]);
+
+        //告诉申请者成功
+        result.setStatus(true);
+        result.setMessage("friendAccept");
+        //被申请者
+        result.setObject(user.getName());
+        friendSession.sendMessage(new TextMessage(result.toString()));
+
+        //告诉被申请者成功
+        result.setStatus(true);
+        result.setMessage("friendAccept");
+        //被申请者
+        result.setObject(friend.getName());
+        session.sendMessage(new TextMessage(result.toString()));
+
+        //在数据库里面加一条数据
+        FriendRelation relation = new FriendRelation();
+        relation.setUser1(user);
+        relation.setUser2(friend);
+        friendRelationRepository.save(relation);
+
+        log.info("用户{}/{} 接受用户 {}/{} 的好友申请", user.getName(), session.getId(), friend.getName(), friendSession.getId());
+
+    }
+
+    /**
+     * 请求好友列表
+     *
+     * @param session
+     * @throws Exception
+     */
+    public void askFriendList(WebSocketSession session) throws Exception {
+        JsonResult result = new JsonResult();
+        User user = getUserFromSession(session);
+        if (user == null) {
+            result.setMessage("用户信息错误，无法请求好友列表");
+            session.sendMessage(new TextMessage(result.toString()));
+            return;
+        }
+        //从数据库里查出来
+        List<User> friendList = friendRelationRepository.findAllByUseId1(user.getId());
+        friendList.addAll(friendRelationRepository.findAllByUseId2(user.getId()));
+
+        List<Object> list = Lists.newLinkedList();
+        //下面判断每个好友是否在线
+        for (User u : friendList) {
+            Map<String, Object> map = Maps.newLinkedHashMap();
+            map.put("name", u.getName());
+            map.put("online", SystemWebSocketHandler.sessionsMap.containsKey(u.getName()));
+            list.add(map);
+        }
+        result.setStatus(true);
+        result.setMessage("friendList");
+        result.setObject(objectMapper.writeValueAsString(list));
+
+        session.sendMessage(new TextMessage(result.toString()));
     }
 
     @Transactional

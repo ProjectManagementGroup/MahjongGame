@@ -132,7 +132,7 @@ public class SystemWebSocketHandler implements WebSocketHandler {
              * kong-bright|
              */
             case "kong-bright":
-                gameService.bumpOrEatOrKong(session, "kong");
+                gameService.bumpOrEatOrKong(payloadArray, session, "kong");
                 break;
             /**
              * 用户退房
@@ -153,14 +153,14 @@ public class SystemWebSocketHandler implements WebSocketHandler {
              * bump|
              */
             case "bump":
-                gameService.bumpOrEatOrKong(session, "bump");
+                gameService.bumpOrEatOrKong(payloadArray, session, "bump");
                 break;
             /**
              * 吃
-             * eat|
+             * eat|number1|number2
              */
             case "eat":
-                gameService.bumpOrEatOrKong(session, "eat");
+                gameService.bumpOrEatOrKong(payloadArray, session, "eat");
                 break;
             /**
              * 发言
@@ -182,7 +182,7 @@ public class SystemWebSocketHandler implements WebSocketHandler {
              * friendName是朋友的用户名
              */
             case "friendInvitation":
-                gameService.sendFriendInvitation(payloadArray, session);
+                userService.sendFriendInvitation(payloadArray, session);
                 break;
             /**
              * 接受好友请求
@@ -190,14 +190,14 @@ public class SystemWebSocketHandler implements WebSocketHandler {
              * friendName是发送好友请求的用户的用户名
              */
             case "friendAccept":
-                gameService.friendAccept(payloadArray, session);
+                userService.friendAccept(payloadArray, session);
                 break;
             /**
              * 提供所有好友
              * friendList|
              */
             case "friendList":
-                gameService.friendAccept(payloadArray, session);
+                userService.askFriendList(session);
                 break;
             default:
                 log.error("请求消息错误");

@@ -14,6 +14,7 @@ import org.mahjong.game.dtos.JsonResult;
 import org.mahjong.game.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.socket.TextMessage;
@@ -48,6 +49,8 @@ public class RoomService {
      *
      * @return
      */
+    @Transactional
+    @Async
     private synchronized Room createRoom() {
         Room room = new Room();
         Long id = Long.parseLong(DateTime.now().toString("yyyyMMddHHmmss"));//时间戳就是id，一定是唯一的
@@ -64,7 +67,9 @@ public class RoomService {
     /**
      * 游戏结束后要重置room的部分信息
      */
-    public Room resetRoom(Room room) {
+    @Transactional
+    @Async
+    public synchronized Room resetRoom(Room room) {
         List<Constants.MahjongTile> list = Lists.newLinkedList(Constants.getMahjongTiles());
         room.setMahjongTiles(list);
         room.setPlaying(false);
@@ -83,7 +88,9 @@ public class RoomService {
      * @param session
      * @throws Exception
      */
-    public void broadcastRoomPlayers(WebSocketSession session) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void broadcastRoomPlayers(WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
         User user = userService.getUserFromSession(session);
         if (user == null) {
@@ -145,6 +152,8 @@ public class RoomService {
      * 返回房间的id
      * 出现错误那么返回-1
      */
+    @Transactional
+    @Async
     public synchronized void joinRandomRoom(WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
         User user = userService.getUserFromSession(session);
@@ -207,6 +216,8 @@ public class RoomService {
     /**
      * 有个玩家受邀请加入好友房间游戏
      */
+    @Transactional
+    @Async
     public synchronized void joinFriendRoom(String[] payloadArray, WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
         if (payloadArray.length != 2) {
@@ -271,7 +282,8 @@ public class RoomService {
      * 使用synchronized是担心时间戳相同
      * 返回发送请求是否
      */
-
+    @Transactional
+    @Async
     public synchronized void sendInvitationAndCreateRoom(String[] payloadArray, WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
         if (payloadArray.length != 4) {
@@ -366,7 +378,9 @@ public class RoomService {
      * @param session
      * @throws Exception
      */
-    public void exit(WebSocketSession session) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void exit(WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
         User user = userService.getUserFromSession(session);
         if (user == null) {
@@ -405,7 +419,9 @@ public class RoomService {
         }
     }
 
-    public void adjustUserIndex(Room room, User winner) {
+    @Transactional
+    @Async
+    public synchronized void adjustUserIndex(Room room, User winner) {
         room.getPlayers().remove(winner);
         room.getPlayers().add(0, winner);
         for (int i = 0; i < room.getPlayers().size(); i++) {
@@ -423,7 +439,9 @@ public class RoomService {
      * @param session
      * @throws Exception
      */
-    public void logout(WebSocketSession session) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void logout(WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
         User user = userService.getUserFromSession(session);
         if (user == null) {

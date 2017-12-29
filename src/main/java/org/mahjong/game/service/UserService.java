@@ -13,6 +13,7 @@ import org.mahjong.game.repository.FriendRelationRepository;
 import org.mahjong.game.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.socket.TextMessage;
@@ -42,13 +43,16 @@ public class UserService {
 
     private static ObjectMapper objectMapper = new ObjectMapper();//用于网络发包
 
-
-    public void save(User user) {
+    @Transactional
+    @Async
+    public synchronized void save(User user) {
         userRepository.save(user);
         Constants.allUsers.put(user.getName(), user);
     }
 
-    public User getUserFromSession(WebSocketSession session) throws Exception {
+    @Transactional
+    @Async
+    public synchronized User getUserFromSession(WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
         String username = Optional.ofNullable(session.getAttributes().get("username")).orElse("").toString();
         if (username.equals("")) {
@@ -65,7 +69,9 @@ public class UserService {
         return user;
     }
 
-    public User getUserFromUsername(String username) {
+    @Transactional
+    @Async
+    public synchronized User getUserFromUsername(String username) {
         if (!Constants.allUsers.containsKey(username)) {
             return null;
         }
@@ -76,7 +82,9 @@ public class UserService {
     /**
      * 游戏结束后要重置user的部分信息
      */
-    public void resetUser(User user) {
+    @Transactional
+    @Async
+    public synchronized void resetUser(User user) {
         user.setReady(false);
 //        user.setRoom(null);//仍然停留在原房间,index也不改变
         user.setThrownTiles(null);
@@ -85,7 +93,9 @@ public class UserService {
         save(user);
     }
 
-    public void login(String[] payloadArray, WebSocketSession session) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void login(String[] payloadArray, WebSocketSession session) throws Exception {
         JsonResult jsonResult = new JsonResult();
         if (payloadArray.length != 3) {
             jsonResult.setMessage("login");
@@ -133,7 +143,9 @@ public class UserService {
      * @param session
      * @throws Exception
      */
-    public void sendFriendInvitation(String[] payloadArray, WebSocketSession session) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void sendFriendInvitation(String[] payloadArray, WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
         if (payloadArray.length != 2) {
             result.setMessage("请求信息错误");
@@ -187,6 +199,8 @@ public class UserService {
     /**
      * 接受好友请求
      */
+    @Transactional
+    @Async
     public synchronized void friendAccept(String[] payloadArray, WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
         if (payloadArray.length != 2) {
@@ -248,7 +262,9 @@ public class UserService {
      * @param session
      * @throws Exception
      */
-    public void askFriendList(WebSocketSession session) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void askFriendList(WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
         User user = getUserFromSession(session);
         if (user == null) {
@@ -276,7 +292,8 @@ public class UserService {
     }
 
     @Transactional
-    public void register(String[] payloadArray, WebSocketSession session) throws Exception {
+    @Async
+    public synchronized void register(String[] payloadArray, WebSocketSession session) throws Exception {
         JsonResult jsonResult = new JsonResult();
         if (payloadArray.length != 3) {
             jsonResult.setMessage("register");
@@ -306,7 +323,9 @@ public class UserService {
     /**
      * 发送准备请求
      */
-    public void setReady(WebSocketSession session) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void setReady(WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
         User user = getUserFromSession(session);
         if (user == null) {

@@ -15,6 +15,7 @@ import org.mahjong.game.domain.User;
 import org.mahjong.game.dtos.JsonResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -47,7 +48,9 @@ public class GameService {
      *
      * @return
      */
-    public void allocateMahjongTile(WebSocketSession session) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void allocateMahjongTile(WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
         User user = userService.getUserFromSession(session);
         if (user == null) {
@@ -99,7 +102,10 @@ public class GameService {
     /**
      * 出牌
      */
-    public void throwMahjongTile(String[] payloadArray, WebSocketSession session) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void throwMahjongTile(String[] payloadArray, WebSocketSession session) throws Exception {
+
         JsonResult result = new JsonResult();
         if (payloadArray.length != 3) {
             result.setMessage("请求信息错误");
@@ -137,13 +143,17 @@ public class GameService {
             session.sendMessage(new TextMessage(result.toString()));
             return;
         }
+        user.getThrownTiles().add(mahjongTile);//加入已出过的牌
+
+        log.info("房间{}计时器启动，时间 {}", user.getRoom(), DateTime.now());
+
+        user.getRoom().setTimerStart(DateTime.now());//计时器启动
         user.getRoom().setLastTile(mahjongTile);//更新房间的最后一张牌
         user.getOwnTiles().remove(mahjongTile);//从手牌中移除
 
         if (user.getThrownTiles() == null) {
             user.setThrownTiles(Lists.newLinkedList());
         }
-        user.getThrownTiles().add(mahjongTile);//加入已出过的牌
         userService.save(user);
         log.info("玩家{}成功 <出牌> {}，session {}，房间id{}", user.getName(), mahjongTile.getChineseName(), session.getId(), user.getRoom().getId());
 
@@ -171,14 +181,15 @@ public class GameService {
             WebSocketSession socketSession = SystemWebSocketHandler.sessionsMap.get(u.getName());
             socketSession.sendMessage(new TextMessage(result.toString()));
         }
-        user.getRoom().setTimerStart(DateTime.now());//计时器启动
     }
 
 
     /**
      * 发言，只有在房间里才能发言
      */
-    public void speak(String[] payloadArray, WebSocketSession session) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void speak(String[] payloadArray, WebSocketSession session) throws Exception {
         JsonResult result = new JsonResult();
         if (payloadArray.length != 2) {
             result.setMessage("请求信息错误");
@@ -223,7 +234,9 @@ public class GameService {
     /**
      * 胡牌请求：前台判断，如果有人胡了，就加入队列
      */
-    public void win(String[] payloadArray, WebSocketSession session, String t) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void win(String[] payloadArray, WebSocketSession session, String t) throws Exception {
         JsonResult result = new JsonResult();
         User user = userService.getUserFromSession(session);
         if (user == null) {
@@ -262,7 +275,9 @@ public class GameService {
     /**
      * 胡牌
      */
-    public void processWin(Constants.MahjongTile tile, Room room, User winner) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void processWin(Constants.MahjongTile tile, Room room, User winner) throws Exception {
 
         //广播胜利消息
         JsonResult result = new JsonResult();
@@ -315,7 +330,9 @@ public class GameService {
     /**
      * 荒牌
      */
-    public void processTie(Room room) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void processTie(Room room) throws Exception {
         //广播s平局消息
         JsonResult result = new JsonResult();
         result.setStatus(true);
@@ -358,7 +375,9 @@ public class GameService {
      * @param room
      * @throws Exception
      */
-    public void gameStart(Room room) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void gameStart(Room room) throws Exception {
         log.info("房间id{}，游戏开始", room.getId());
 
         room.setPlaying(true);
@@ -415,7 +434,10 @@ public class GameService {
      * @param room
      * @throws Exception
      */
-    public void nextRound(Room room) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void nextRound(Room room) throws Exception {
+        log.info("房间{}计时器结束，时间 {}", room.getId(), DateTime.now());
         room.setTimerStart(null); //下面等待该用户出牌，所以计时器设为空
 
         //先判断是不是有人胡牌了
@@ -447,7 +469,7 @@ public class GameService {
         }
     }
 
-    private boolean isTie(Room room) {
+    private synchronized boolean isTie(Room room) {
         return room.getMahjongTiles().isEmpty();
     }
 
@@ -457,7 +479,9 @@ public class GameService {
      * @param session
      * @throws Exception
      */
-    public void bumpOrEatOrKong(String[] payloadArray, WebSocketSession session, String t) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void bumpOrEatOrKong(String[] payloadArray, WebSocketSession session, String t) throws Exception {
         JsonResult result = new JsonResult();
         User user = userService.getUserFromSession(session);
         if (user == null) {
@@ -501,7 +525,9 @@ public class GameService {
         log.info("用户{}，session {} 发送了 <{}> 的请求, 最后一张牌是 {}, 其余两张牌是 {} 和 {}", user.getName(), session.getId(), t, tileRequest.getTile0(), tileRequest.getTile1(), tileRequest.getTile2());
     }
 
-    private int processBeforeNewRound(Room room) throws Exception {
+    @Transactional
+    @Async
+    private synchronized int processBeforeNewRound(Room room) throws Exception {
         //情况1：碰 吃
         //情况2：吃 碰
         //情况3：杠 吃
@@ -525,7 +551,9 @@ public class GameService {
         return index;
     }
 
-    public void kongDark(WebSocketSession session) throws Exception {
+    @Transactional
+    @Async
+    public synchronized void kongDark(WebSocketSession session) throws Exception {
         //暗杠的情况是：轮到这个用户抓牌，这个用户得到了暗杠，所以发送暗杠请求，就轮到这个用户抓牌了
         JsonResult result = new JsonResult();
         User user = userService.getUserFromSession(session);
@@ -558,7 +586,9 @@ public class GameService {
 
     }
 
-    private void processBumpOrEatOrKong(TileRequest tileRequest, WebSocketSession session, Room room, String type) throws Exception {
+    @Transactional
+    @Async
+    private synchronized void processBumpOrEatOrKong(TileRequest tileRequest, WebSocketSession session, Room room, String type) throws Exception {
         JsonResult result = new JsonResult();
 
         User user = userService.getUserFromSession(session);
@@ -599,7 +629,9 @@ public class GameService {
         }
     }
 
-    private void broadcastSpecificMessage(Room room, String json, Long userId) throws Exception {
+    @Transactional
+    @Async
+    private synchronized void broadcastSpecificMessage(Room room, String json, Long userId) throws Exception {
         for (User u : room.getPlayers()) {
             if (!SystemWebSocketHandler.sessionsMap.containsKey(u.getName())) {//下线的人暂时不管
                 continue;

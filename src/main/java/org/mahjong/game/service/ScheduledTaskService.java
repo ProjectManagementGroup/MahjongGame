@@ -35,7 +35,7 @@ public class ScheduledTaskService {
     @Scheduled(fixedRate = 50)//单位：ms
     @Transactional
     @Async
-    public void checkRoomStart() throws Exception {
+    public synchronized void checkRoomStart() throws Exception {
 //        log.info("定时任务：检查游戏是否开始");
         A:
         for (Room room : Constants.roomMap.values()) {
@@ -61,7 +61,7 @@ public class ScheduledTaskService {
     @Scheduled(fixedRate = 50)//单位：ms
     @Transactional
     @Async
-    public void selectPriorRequest() throws Exception {
+    public synchronized void selectPriorRequest() throws Exception {
 //        log.info("定时任务：检查下一轮是否开始");
         for (Room room : Constants.roomMap.values()) {
             //如果计时器为空，说明已经发完了牌，现在正在等到用户出牌请求

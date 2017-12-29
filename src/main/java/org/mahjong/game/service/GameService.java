@@ -8,7 +8,6 @@ import com.google.common.collect.Sets;
 import org.joda.time.DateTime;
 import org.mahjong.game.Constants;
 import org.mahjong.game.config.SystemWebSocketHandler;
-import org.mahjong.game.domain.FriendRelation;
 import org.mahjong.game.domain.Room;
 import org.mahjong.game.domain.TileRequest;
 import org.mahjong.game.domain.User;
@@ -448,7 +447,7 @@ public class GameService {
             processWin(list.get(0).getTile0(), room, user);
         } else if (index == -1) {//如果没有要抢，那么按照正常顺序开会时发牌
             log.info("房间id{}，新一轮开始", room.getId());
-            boolean b = isTie(room);
+            boolean b = isRoomTie(room);
             if (b) {
                 processTie(room);
                 return;
@@ -469,7 +468,9 @@ public class GameService {
         }
     }
 
-    private synchronized boolean isTie(Room room) {
+    @Transactional
+    @Async
+    private synchronized boolean isRoomTie(Room room) {
         return room.getMahjongTiles().isEmpty();
     }
 

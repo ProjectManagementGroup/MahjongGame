@@ -143,13 +143,13 @@ public class Constants {
 
 
         eastWind("东风", MahjongType.wind, 1),
-        westWind("西风", MahjongType.wind, 2),
+        westWind("西风", MahjongType.wind, 5),
         southWind("南风", MahjongType.wind, 3),
-        northWind("北风", MahjongType.wind, 4),
+        northWind("北风", MahjongType.wind, 7),
 
         middle("中", MahjongType.dragon, 1),
-        fortune("发", MahjongType.dragon, 2),
-        white("白", MahjongType.dragon, 3);
+        fortune("发", MahjongType.dragon, 3),
+        white("白", MahjongType.dragon, 5);
 
         private String chineseName;
         private MahjongType type;

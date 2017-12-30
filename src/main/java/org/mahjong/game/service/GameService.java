@@ -296,7 +296,7 @@ public class GameService {
         resultMap.put("winTile", tile.getStruct());
 
         //判断是自摸胡牌还是点炮胡牌
-        if (room.getTimerStart() == null) {
+        if (winner.getOwnTiles().size() == 14) {
             //自摸胡牌
             winner.getOwnTiles().remove(tile);
             resultMap.put("ownTiles", winner.getJsonOwnTileLists());

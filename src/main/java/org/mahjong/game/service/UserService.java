@@ -191,7 +191,7 @@ public class UserService {
         result.setStatus(true);
         result.setMessage("friendInvitation");
         //邀请者
-        result.setObject(user.getName());
+        result.setObject(objectMapper.writeValueAsString(user.getName()));
         friendSession.sendMessage(new TextMessage(result.toString()));
 
         //不给申请人发消息了

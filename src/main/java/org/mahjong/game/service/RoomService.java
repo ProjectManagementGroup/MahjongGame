@@ -693,17 +693,18 @@ public class RoomService {
 //
 //        System.out.println(objectMapper.writeValueAsString(resultMap));
 
-        JsonResult result = new JsonResult();
-        result.setStatus(true);
-        result.setMessage("login");
-        Map<String, Object> map = Maps.newLinkedHashMap();
-        map.put("name", "zyw");
-        map.put("point", 100);
-        //把自己的好友列表也给出去
-        map.put("friendList", Arrays.asList("zyw","anyi","wn"));
-        result.setObject(objectMapper.writeValueAsString(map));
+//        JsonResult result = new JsonResult();
+//        result.setStatus(true);
+//        result.setMessage("login");
+//        Map<String, Object> map = Maps.newLinkedHashMap();
+//        map.put("name", "zyw");
+//        map.put("point", 100);
+//        //把自己的好友列表也给出去
+//        map.put("friendList", Arrays.asList("zyw","anyi","wn"));
+//        result.setObject(objectMapper.writeValueAsString(map));
 
-        System.out.println(result);
+        String a = "zya";
+        System.out.println(objectMapper.writeValueAsString(a));
     }
 
     public void test(String[] payloadArray, WebSocketSession session) throws Exception {

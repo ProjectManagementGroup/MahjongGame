@@ -595,7 +595,7 @@ public class GameService {
         result.setMessage("other dark kong success");
         Map<String, String> map = Maps.newLinkedHashMap();
         map.put("name", user.getName());
-        result.setObject(map.toString());
+        result.setObject(objectMapper.writeValueAsString(map));
         broadcastSpecificMessage(user.getRoom(), result.toString(), user.getId());
 
         //再给这个用户发一张牌

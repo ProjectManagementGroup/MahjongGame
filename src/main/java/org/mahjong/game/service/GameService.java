@@ -305,20 +305,20 @@ public class GameService {
             resultMap.put("ownTiles", winner.getJsonOwnTileLists());
         }
 //        List<Object> list = Lists.newLinkedList();
-//        for (User u : room.getPlayers()) {
+        for (User u : room.getPlayers()) {
 //            Map<String, Object> map = Maps.newLinkedHashMap();
 //            map.put("name", u.getName());
-//            if (u.getId() == winner.getId()) {
-//                u.setPoint(u.getPoint() + 50);
-//            } else {
-//                u.setPoint(u.getPoint() - 50);
-//            }
+            if (u.getId() == winner.getId()) {
+                u.setPoint(u.getPoint() + 50);
+            } else {
+                u.setPoint(u.getPoint() - 50);
+            }
 //            map.put("point", u.getPoint());
 //            map.put("thrownTiles", u.getJsonThrownTileLists());
 //            map.put("ownTiles", u.getJsonOwnTileLists());
 //            map.put("gameid", u.getGameid());
 //            list.add(map);
-//        }
+        }
 
         //加入所有玩家所有信息
         result.setObject(objectMapper.writeValueAsString(resultMap));
